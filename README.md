@@ -1,2 +1,2 @@
-# food-plus-server
-A server to provider API about food.
+# food-plus-react-native
+A mobile app to create recipes, evaluate, discovery and learning to cook.
