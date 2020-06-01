@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { createStackNavigator, TransitionSpecs, HeaderStyleInterpolators } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import NewRecipe from './views/NewRecipe';
+import SignIn from './views/SignIn';
 import ListRecipe from './views/ListRecipe';
+import { ContextAuthProvider, ContextAuth } from './contexts/authContext';
 
 const HorizontalTransition = {
     gestureDirection: 'horizontal',
@@ -29,18 +31,36 @@ const HorizontalTransition = {
 
 const Stack = createStackNavigator();
 
-function App() {
+const StackApp = () => {
+    const { auth } = useContext(ContextAuth);
     return (
         <NavigationContainer>
             <Stack.Navigator headerMode="none">
-                <Stack.Screen
-                    name="ListRecipe"
-                    component={ListRecipe}
-                    options={HorizontalTransition} />
-                <Stack.Screen name="NewRecipe" component={NewRecipe} options={HorizontalTransition} />
+                {auth.userToken ?
+                    (<>
+                        <Stack.Screen
+                            name="ListRecipe"
+                            component={ListRecipe}
+                            options={HorizontalTransition} />
+                        <Stack.Screen name="NewRecipe" component={NewRecipe} options={HorizontalTransition} />
+                    </>)
+                    :
+                    (<Stack.Screen
+                        name="SignIn"
+                        component={SignIn}
+                        options={HorizontalTransition} />)}
             </Stack.Navigator>
         </NavigationContainer>
     );
+}
+
+
+const App = () => {
+    return (
+        <ContextAuthProvider>
+            <StackApp />
+        </ContextAuthProvider>
+    )
 }
 
 export default App;
