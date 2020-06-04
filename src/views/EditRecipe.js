@@ -13,15 +13,16 @@ import {
 } from 'native-base';
 import Form from '../components/Form';
 import {FirebaseService, PathRecipe} from '../services/FirebaseService';
-const NewRecipe = ({navigation}) => {
+const EditRecipe = ({navigation, route}) => {
   const [state, setState] = useState({
-    name: '',
-    ingredients: [],
-    steps: [],
-    image: '',
+    key: route.params.key,
+    name: route.params.name,
+    ingredients: route.params.ingredients ?? [],
+    steps: route.params.steps ?? [],
+    image: route.params.image,
   });
-  const onSave = () => {
-    if (state.image) {
+  const onEdit = () => {
+    if (state.image && !state.image.includes('http')) {
       FirebaseService.pushFile(state.image, url => {
         state.image = url;
         FirebaseService.pushData(PathRecipe, state);
@@ -41,13 +42,13 @@ const NewRecipe = ({navigation}) => {
           </Button>
         </Left>
         <Body>
-          <Title>Nova Receita</Title>
+          <Title>Editar Receita</Title>
         </Body>
       </Header>
       <Content style={styles.content}>
         <Form recipe={state} onChangeRecipe={recipe => setState(recipe)} />
-        <Button onPress={onSave} full success style={styles.btnSave}>
-          <Text>Salvar</Text>
+        <Button onPress={onEdit} full success style={styles.btnSave}>
+          <Text>Editar</Text>
         </Button>
       </Content>
     </Container>
@@ -63,4 +64,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NewRecipe;
+export default EditRecipe;

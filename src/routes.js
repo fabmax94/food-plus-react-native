@@ -8,6 +8,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import NewRecipe from './views/NewRecipe';
 import SignIn from './views/SignIn';
 import ListRecipe from './views/ListRecipe';
+import EditRecipe from './views/EditRecipe';
+import DetailRecipe from './views/DetailRecipe';
 import {ContextAuthProvider, ContextAuth} from './contexts/authContext';
 
 const HorizontalTransition = {
@@ -50,6 +52,16 @@ const StackApp = () => {
             <Stack.Screen
               name="NewRecipe"
               component={NewRecipe}
+              options={HorizontalTransition}
+            />
+            <Stack.Screen
+              name="EditRecipe"
+              component={EditRecipe}
+              options={HorizontalTransition}
+            />
+            <Stack.Screen
+              name="DetailRecipe"
+              component={DetailRecipe}
               options={HorizontalTransition}
             />
           </>

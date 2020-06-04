@@ -1,13 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import {
   Container,
   Header,
   Left,
-  Right,
   Body,
   Title,
-  Button,
   Icon,
   View,
   Fab,
@@ -17,6 +20,7 @@ import {
   CardItem,
 } from 'native-base';
 import {SwipeListView} from 'react-native-swipe-list-view';
+import FastImage from 'react-native-fast-image';
 import {FirebaseService, PathRecipe} from '../services/FirebaseService';
 
 const ListRecipe = ({navigation}) => {
@@ -26,6 +30,24 @@ const ListRecipe = ({navigation}) => {
       setRecipeList(result);
     });
   }, []);
+
+  const onHandleDelete = key =>
+    Alert.alert(
+      'Deletar Receita',
+      'Você tem certeza que quer deletar a receita?',
+      [
+        {
+          text: 'Não',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Sim',
+          onPress: () => FirebaseService.popData(PathRecipe, {key: key}),
+        },
+      ],
+      {cancelable: false},
+    );
   return (
     <Container>
       <Header androidStatusBarColor="#573ea8" style={styles.header}>
@@ -37,51 +59,47 @@ const ListRecipe = ({navigation}) => {
         <SwipeListView
           data={recipeList}
           renderItem={(data, rowMap) => (
-            <View style={styles.rowFront}>
-              <Card key={data.item.key}>
-                <CardItem>
-                  <Left>
-                    <Body>
-                      <Text>{data.item.name}</Text>
-                      <Text note>Fabio Alexandre</Text>
-                    </Body>
-                  </Left>
-                </CardItem>
-                {data.item.image ? (
-                  <CardItem cardBody>
-                    <Image
-                      source={{uri: data.item.image}}
-                      style={styles.image}
-                    />
+            <TouchableWithoutFeedback
+              onPress={() => {
+                rowMap[data.item.key].closeRow();
+                navigation.navigate('DetailRecipe', data.item);
+              }}>
+              <View style={styles.rowFront}>
+                <Card key={data.item.key}>
+                  <CardItem>
+                    <Left>
+                      <Body>
+                        <Text>{data.item.name}</Text>
+                        <Text note>Fabio Alexandre</Text>
+                      </Body>
+                    </Left>
                   </CardItem>
-                ) : null}
-                <CardItem>
-                  <Left>
-                    <Button transparent>
-                      <Icon active name="thumbs-up" />
-                      <Text>0</Text>
-                    </Button>
-                  </Left>
-                  <Body>
-                    <Button transparent>
-                      <Icon active name="chatbubbles" />
-                      <Text>0</Text>
-                    </Button>
-                  </Body>
-                  <Right>
-                    <Text note>05/05/2020</Text>
-                  </Right>
-                </CardItem>
-              </Card>
-            </View>
+                  {data.item.image ? (
+                    <CardItem cardBody>
+                      <FastImage
+                        source={{uri: data.item.image}}
+                        style={styles.image}
+                      />
+                    </CardItem>
+                  ) : null}
+                </Card>
+              </View>
+            </TouchableWithoutFeedback>
           )}
           renderHiddenItem={(data, rowMap) => (
             <View style={styles.rowBack}>
-              <TouchableOpacity style={[styles.editBtn, styles.rowBtn]}>
+              <TouchableOpacity
+                style={[styles.editBtn, styles.rowBtn]}
+                onPress={() => {
+                  rowMap[data.item.key].closeRow();
+                  navigation.navigate('EditRecipe', data.item);
+                }}>
                 <Text style={styles.textBtn}>Editar</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={[styles.deleteBtn, styles.rowBtn]}>
+              <TouchableOpacity
+                style={[styles.deleteBtn, styles.rowBtn]}
+                onPress={() => onHandleDelete(data.item.key)}>
                 <Text style={styles.textBtn}>Deletar</Text>
               </TouchableOpacity>
             </View>
