@@ -20,7 +20,9 @@ const FormItems = ({items, onChange, placeholder}) => {
     <Content>
       <View style={styles.listContainer}>
         {itemList.length == 0 ? (
-          <Text style={{alignSelf: 'center'}}>Nenhum {placeholder}</Text>
+          <Text style={{alignSelf: 'center', color: '#4d4e52'}}>
+            Nenhum {placeholder}
+          </Text>
         ) : null}
         {itemList.map((item, index) => (
           <View key={`container${index}`} style={styles.itemContainer}>
@@ -29,6 +31,7 @@ const FormItems = ({items, onChange, placeholder}) => {
                 value={item}
                 onChangeText={text => handleChange(index, text)}
                 placeholder={placeholder}
+                style={{color: '#4d4e52'}}
               />
             </Item>
             <Button danger onPress={() => deleteItem(index)} transparent>
@@ -38,9 +41,13 @@ const FormItems = ({items, onChange, placeholder}) => {
         ))}
       </View>
       <View style={{alignSelf: 'flex-end'}}>
-        <Button onPress={addItem} bordered>
-          <Icon name="plus" type="FontAwesome" />
-          <Text>{placeholder}</Text>
+        <Button
+          onPress={addItem}
+          bordered
+          rounded
+          style={{borderColor: '#ef3e5c'}}>
+          <Icon name="plus" type="FontAwesome" style={{color: '#ef3e5c'}} />
+          <Text style={{color: '#ef3e5c'}}>{placeholder}</Text>
         </Button>
       </View>
     </Content>

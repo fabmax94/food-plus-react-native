@@ -1,6 +1,7 @@
 import React, {useReducer, useEffect} from 'react';
 import {authReducer} from '../reducers/authReducer';
 import AsyncStorage from '@react-native-community/async-storage';
+import {FirebaseService, PathRecipe} from '../services/FirebaseService';
 
 const ContextAuth = React.createContext();
 
@@ -12,25 +13,33 @@ const ContextAuthProvider = ({children}) => {
   });
 
   const signIn = async data => {
-    // In a production app, we need to send some data (usually username, password) to server and get a token
-    // We will also need to handle errors if sign in failed
-    // After getting token, we need to persist the token using `AsyncStorage`
-    // In the example, we'll use a dummy token
+    if (data.avatar) {
+      FirebaseService.pushFile(data.avatar, url => {
+        data.avatar = url;
+        AsyncStorage.setItem('userAvatar', data.avatar);
+        dispatch({type: 'SIGN_IN', token: data.name, avatar: data.avatar});
+      });
+    }
     await AsyncStorage.setItem('userToken', data.name);
-    dispatch({type: 'SIGN_IN', token: data.name});
+    dispatch({type: 'SIGN_IN', token: data.name, avatar: null});
   };
-  const signOut = () => dispatch({type: 'SIGN_OUT'});
+  const signOut = async () => {
+    await AsyncStorage.clear();
+    dispatch({type: 'SIGN_OUT'});
+  };
 
   useEffect(() => {
     const bootstrapAsync = async () => {
       let userToken;
+      let avatar;
 
       try {
         userToken = await AsyncStorage.getItem('userToken');
-      } catch (e) {
-        // Restoring token failed
-      }
-      dispatch({type: 'RESTORE_TOKEN', token: userToken});
+      } catch (e) {}
+      try {
+        avatar = await AsyncStorage.getItem('userAvatar');
+      } catch (e) {}
+      dispatch({type: 'RESTORE_TOKEN', token: userToken, avatar: avatar});
     };
     bootstrapAsync();
   }, []);

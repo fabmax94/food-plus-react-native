@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, ScrollView} from 'react-native';
+import {StyleSheet, ScrollView, Share} from 'react-native';
 import {
   Container,
   Header,
@@ -12,6 +12,7 @@ import {
   CardItem,
   Card,
   View,
+  Right,
 } from 'native-base';
 import FastImage from 'react-native-fast-image';
 import ListItems from '../components/ListItems';
@@ -19,11 +20,61 @@ const DetailRecipe = ({navigation, route}) => {
   const [state, setState] = useState({
     key: route.params.key,
     name: route.params.name,
+    description: route.params.description,
     ingredients: route.params.ingredients ?? [],
     steps: route.params.steps ?? [],
     image: route.params.image,
   });
-  console.log(route.params.image);
+  const onShare = async () => {
+    let ingredients = '';
+    let steps = '';
+    if (state.ingredients.length) {
+      ingredients =
+        '*Ingredientes*:\n' +
+        state.ingredients
+          .map(
+            item =>
+              `* ${item}${
+                state.ingredients.indexOf(item) == state.ingredients.length - 1
+                  ? '.'
+                  : ';'
+              }`,
+          )
+          .join('\n');
+    }
+    if (state.steps.length) {
+      steps =
+        '*Passos*:\n' +
+        state.steps
+          .map(
+            item =>
+              `* ${item}${
+                state.steps.indexOf(item) == state.steps.length - 1 ? '.' : ';'
+              }`,
+          )
+          .join('\n');
+    }
+    let message = `*${state.name}*\n\n${
+      state.description
+    }\n\n${ingredients}\n\n${steps}`;
+    try {
+      const result = await Share.share({
+        title: state.name,
+        message: message,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
   return (
     <Container>
       <ScrollView>
@@ -40,20 +91,27 @@ const DetailRecipe = ({navigation, route}) => {
               </Button>
             </Left>
             <Body />
+            <Right>
+              <Button transparent onPress={onShare}>
+                <Icon name="share" />
+              </Button>
+            </Right>
           </Header>
         </FastImage>
         <Content>
           <Card>
             <CardItem>
               <Content>
-                <View style={{flex: 1, alignSelf: 'flex-start'}}>
+                <View style={{flex: 1, alignSelf: 'center'}}>
                   <Text style={styles.title}>{state.name}</Text>
                 </View>
-                <Text style={{marginTop: 10, color: '#4d4e52'}}>
-                  Esta receita dá pra 3 pessoas, lembrando que no preparo
-                  tradicional não conterá os ingredientes de receita clássico.
-                  Ela em geral dá pra 3 pessoas, mas se duplicar os ingredientes
-                  dá pra mais.
+                <Text
+                  style={{
+                    marginTop: 10,
+                    color: '#4d4e52',
+                    textAlign: 'justify',
+                  }}>
+                  {state.description}
                 </Text>
               </Content>
             </CardItem>

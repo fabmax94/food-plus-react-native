@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {
   StyleSheet,
   TouchableOpacity,
@@ -9,6 +9,7 @@ import {
   Container,
   Header,
   Left,
+  Right,
   Body,
   Title,
   Icon,
@@ -18,23 +19,59 @@ import {
   Content,
   Card,
   CardItem,
+  Spinner,
+  Thumbnail,
 } from 'native-base';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import FastImage from 'react-native-fast-image';
 import {FirebaseService, PathRecipe} from '../services/FirebaseService';
+import {ContextAuth} from '../contexts/authContext';
 
 const ListRecipe = ({navigation}) => {
+  const {auth, signOut} = useContext(ContextAuth);
   const [recipeList, setRecipeList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     FirebaseService.getDataList(PathRecipe, result => {
       setRecipeList(result);
+      setIsLoading(false);
     });
   }, []);
 
-  const onHandleDelete = key =>
+  const onHandleEdit = item => {
+    if (item.author === auth.userToken) {
+      navigation.navigate('EditRecipe', item);
+    } else {
+      alert('Somente o autor da receita pode edita-lá');
+    }
+  };
+  const onHandleDelete = item => {
+    if (item.author === auth.userToken) {
+      Alert.alert(
+        'Deletar Receita',
+        'Você tem certeza que quer deletar a receita?',
+        [
+          {
+            text: 'Não',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'Sim',
+            onPress: () => FirebaseService.popData(PathRecipe, {key: item.key}),
+          },
+        ],
+        {cancelable: false},
+      );
+    } else {
+      alert('Somente o autor da receita pode deleta-lá');
+    }
+  };
+
+  const onSignOut = () => {
     Alert.alert(
-      'Deletar Receita',
-      'Você tem certeza que quer deletar a receita?',
+      'Sair',
+      'Você deseja se desconectar?',
       [
         {
           text: 'Não',
@@ -43,19 +80,27 @@ const ListRecipe = ({navigation}) => {
         },
         {
           text: 'Sim',
-          onPress: () => FirebaseService.popData(PathRecipe, {key: key}),
+          onPress: signOut,
         },
       ],
       {cancelable: false},
     );
+  };
   return (
     <Container>
-      <Header androidStatusBarColor="#573ea8" style={styles.header}>
+      <Header androidStatusBarColor="#ef3e5c" style={styles.header}>
         <Body>
           <Title>Food Plus</Title>
         </Body>
+        <Right>
+          <TouchableOpacity onPress={onSignOut}>
+            <Icon name="sign-in" type="FontAwesome" style={{color: 'white'}} />
+          </TouchableOpacity>
+        </Right>
       </Header>
       <Content>
+        {isLoading ? <Spinner color={'#ef3e5c'} /> : null}
+
         <SwipeListView
           data={recipeList}
           renderItem={(data, rowMap) => (
@@ -68,9 +113,30 @@ const ListRecipe = ({navigation}) => {
                 <Card key={data.item.key}>
                   <CardItem>
                     <Left>
+                      {data.item.avatar ? (
+                        <Thumbnail
+                          source={{
+                            uri: data.item.avatar,
+                          }}
+                        />
+                      ) : (
+                        <Icon
+                          name="user-secret"
+                          type="FontAwesome"
+                          style={{color: '#415a6b'}}
+                        />
+                      )}
                       <Body>
-                        <Text>{data.item.name}</Text>
-                        <Text note>Fabio Alexandre</Text>
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            textTransform: 'uppercase',
+                            color: '#777777',
+                            fontWeight: 'bold',
+                          }}>
+                          {data.item.name}
+                        </Text>
+                        <Text note>{data.item.author}</Text>
                       </Body>
                     </Left>
                   </CardItem>
@@ -92,14 +158,14 @@ const ListRecipe = ({navigation}) => {
                 style={[styles.editBtn, styles.rowBtn]}
                 onPress={() => {
                   rowMap[data.item.key].closeRow();
-                  navigation.navigate('EditRecipe', data.item);
+                  onHandleEdit(data.item);
                 }}>
                 <Text style={styles.textBtn}>Editar</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={[styles.deleteBtn, styles.rowBtn]}
-                onPress={() => onHandleDelete(data.item.key)}>
+                onPress={() => onHandleDelete(data.item)}>
                 <Text style={styles.textBtn}>Deletar</Text>
               </TouchableOpacity>
             </View>
@@ -121,7 +187,7 @@ const ListRecipe = ({navigation}) => {
 
 const styles = StyleSheet.create({
   fab: {
-    backgroundColor: '#7159C1',
+    backgroundColor: '#ef3e5c',
   },
   image: {
     height: 200,
@@ -132,7 +198,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#7159C1',
   },
   header: {
-    backgroundColor: '#7159C1',
+    backgroundColor: '#ef3e5c',
   },
   container: {
     flex: 1,
@@ -154,11 +220,11 @@ const styles = StyleSheet.create({
     width: 75,
   },
   editBtn: {
-    backgroundColor: 'blue',
+    backgroundColor: '#68e1f8',
     left: 5,
   },
   deleteBtn: {
-    backgroundColor: '#ff0000',
+    backgroundColor: '#f1726e',
     right: 5,
   },
   textBtn: {

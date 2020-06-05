@@ -10,6 +10,7 @@ import {
   Text,
   Content,
   View,
+  Textarea,
 } from 'native-base';
 import FormItems from './FormItems';
 const Form = ({recipe, onChangeRecipe}) => {
@@ -39,15 +40,26 @@ const Form = ({recipe, onChangeRecipe}) => {
   };
   return (
     <Content>
-      <Label>Nome</Label>
+      <Label style={{color: '#4d4e52'}}>Nome</Label>
       <Item>
         <Input
           value={recipe.name}
           onChangeText={name => {
             onChangeRecipe({...recipe, name});
           }}
+          style={{color: '#4d4e52'}}
         />
       </Item>
+      <Label style={styles.label}>Descrição</Label>
+      <Textarea
+        rowSpan={5}
+        bordered
+        value={recipe.description}
+        onChangeText={description => {
+          onChangeRecipe({...recipe, description});
+        }}
+        style={{color: '#4d4e52'}}
+      />
       <Label style={styles.label}>Ingredientes</Label>
       <FormItems
         items={recipe.ingredients}
@@ -71,13 +83,17 @@ const Form = ({recipe, onChangeRecipe}) => {
           style={{height: 100, width: 100, flex: 1, alignSelf: 'center'}}
         />
       ) : (
-        <Text style={{alignSelf: 'center'}}>Nenhuma Imagem</Text>
+        <Text style={{alignSelf: 'center', color: '#4d4e52'}}>Nenhuma Imagem</Text>
       )}
 
       <View style={{alignSelf: 'flex-end', marginTop: 20}}>
-        <Button onPress={chooseImage} bordered>
-          <Icon name="file" type="FontAwesome" />
-          <Text>Escolha uma foto</Text>
+        <Button
+          onPress={chooseImage}
+          bordered
+          rounded
+          style={{borderColor: '#ef3e5c'}}>
+          <Icon name="file" type="FontAwesome" style={{color: '#ef3e5c'}} />
+          <Text style={{color: '#ef3e5c'}}>Escolha uma foto</Text>
         </Button>
       </View>
     </Content>
@@ -92,6 +108,7 @@ const styles = StyleSheet.create({
   },
   label: {
     marginTop: 10,
+    color: '#4d4e52',
   },
 });
 
