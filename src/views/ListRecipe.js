@@ -21,6 +21,9 @@ import {
   CardItem,
   Spinner,
   Thumbnail,
+  Item,
+  Input,
+  Form,
 } from 'native-base';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import FastImage from 'react-native-fast-image';
@@ -30,10 +33,13 @@ import {ContextAuth} from '../contexts/authContext';
 const ListRecipe = ({navigation}) => {
   const {auth, signOut} = useContext(ContextAuth);
   const [recipeList, setRecipeList] = useState([]);
+  const [recipeFilter, setRecipeFilter] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch] = useState('');
   useEffect(() => {
     FirebaseService.getDataList(PathRecipe, result => {
       setRecipeList(result);
+      setRecipeFilter(result);
       setIsLoading(false);
     });
   }, []);
@@ -86,6 +92,17 @@ const ListRecipe = ({navigation}) => {
       {cancelable: false},
     );
   };
+
+  const onSearch = e =>
+    setRecipeFilter(
+      recipeList.filter(
+        item =>
+          item.name.toLowerCase().includes(search.toLowerCase()) ||
+          item.author.toLowerCase().includes(search.toLowerCase()) ||
+          item.description.toLowerCase().includes(search.toLowerCase()),
+      ),
+    );
+
   return (
     <Container>
       <Header androidStatusBarColor="#ef3e5c" style={styles.header}>
@@ -99,10 +116,29 @@ const ListRecipe = ({navigation}) => {
         </Right>
       </Header>
       <Content>
-        {isLoading ? <Spinner color={'#ef3e5c'} /> : null}
+        {isLoading ? (
+          <Spinner color={'#ef3e5c'} />
+        ) : (
+          <Form style={{marginTop: 10}}>
+            <Item rounded style={{borderColor: '#415a6b'}}>
+              <Icon
+                name={'search'}
+                type="FontAwesome"
+                style={{color: '#415a6b'}}
+              />
+              <Input
+                placeholder={'Pesquisar'}
+                style={{color: '#415a6b'}}
+                value={search}
+                onChangeText={text => setSearch(text)}
+                onSubmitEditing={onSearch}
+              />
+            </Item>
+          </Form>
+        )}
 
         <SwipeListView
-          data={recipeList}
+          data={recipeFilter}
           renderItem={(data, rowMap) => (
             <TouchableWithoutFeedback
               onPress={() => {

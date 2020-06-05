@@ -92,7 +92,7 @@ const Form = ({recipe, onChangeRecipe}) => {
           bordered
           rounded
           style={{borderColor: '#ef3e5c'}}>
-          <Icon name="file" type="FontAwesome" style={{color: '#ef3e5c'}} />
+          <Icon name="image" type="FontAwesome" style={{color: '#ef3e5c'}} />
           <Text style={{color: '#ef3e5c'}}>Escolha uma foto</Text>
         </Button>
       </View>
