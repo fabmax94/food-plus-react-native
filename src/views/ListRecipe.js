@@ -174,7 +174,7 @@ const ListRecipe = ({navigation}) => {
             </View>
           )}
           leftOpenValue={75}
-          rightOpenValue={-85}
+          rightOpenValue={-80}
         />
       </Content>
       <Fab
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     top: 5,
-    width: 75,
+    width: 80,
   },
   editBtn: {
     backgroundColor: '#68e1f8',
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   },
   deleteBtn: {
     backgroundColor: '#f1726e',
-    right: 15,
+    right: 5,
   },
   textBtn: {
     color: '#FFF',

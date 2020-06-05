@@ -8,16 +8,9 @@ window.Blob = Blob;
 
 export const PathRecipe = 'recipe';
 export const PathImages = 'images';
-export const PathGroup = 'notepluss/group';
 
 export class FirebaseService {
   static listener;
-
-  static offDataList = nodePath => {
-    if (FirebaseService.listener) {
-      firebaseDatabase.ref(nodePath).off('value', FirebaseService.listener);
-    }
-  };
 
   static getDataList = (nodePath, callback, keyFilter = null) => {
     let query = firebaseDatabase.ref(nodePath);

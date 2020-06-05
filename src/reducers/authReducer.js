@@ -8,13 +8,11 @@ const authReducer = (state, {type, token, avatar}) => {
       };
     case 'SIGN_IN':
       return {
-        isSignout: false,
         userToken: token,
         avatar: avatar,
       };
     case 'SIGN_OUT':
       return {
-        isSignout: true,
         userToken: null,
         avatar: null,
       };

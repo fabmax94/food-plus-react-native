@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext} from 'react';
 import {StyleSheet} from 'react-native';
 import {
   Container,
@@ -28,6 +28,7 @@ const EditRecipe = ({navigation, route}) => {
     author: route.params.author,
     avatar: route.params.avatar,
   });
+
   const onEdit = () => {
     state.author = auth.userToken;
     state.avatar = auth.avatar;
@@ -44,7 +45,7 @@ const EditRecipe = ({navigation, route}) => {
   };
 
   return (
-    <Container>
+    <Container style={styles.container}>
       <Header androidStatusBarColor="#ef3e5c" style={styles.header}>
         <Left>
           <Button transparent onPress={navigation.goBack}>
@@ -67,6 +68,9 @@ const EditRecipe = ({navigation, route}) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#ecedf3',
+  },
   content: {
     padding: 10,
   },

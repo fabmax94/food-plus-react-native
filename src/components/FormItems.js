@@ -12,7 +12,7 @@ const FormItems = ({items, onChange, placeholder}) => {
   };
   const deleteItem = indexToDelete => {
     setItemList(itemList.filter((item, index) => index != indexToDelete));
-    onChange(itemList);
+    onChange(itemList.filter((item, index) => index != indexToDelete));
   };
   const addItem = () => {
     setItemList([...itemList, '']);
@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
+    backgroundColor: 'white',
   },
 });
 

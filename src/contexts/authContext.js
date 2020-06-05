@@ -8,7 +8,6 @@ const ContextAuth = React.createContext();
 const ContextAuthProvider = ({children}) => {
   const [auth, dispatch] = useReducer(authReducer, {
     isLoading: true,
-    isSignout: false,
     userToken: null,
   });
 
@@ -23,6 +22,7 @@ const ContextAuthProvider = ({children}) => {
     await AsyncStorage.setItem('userToken', data.name);
     dispatch({type: 'SIGN_IN', token: data.name, avatar: null});
   };
+
   const signOut = async () => {
     await AsyncStorage.clear();
     dispatch({type: 'SIGN_OUT'});
@@ -41,6 +41,7 @@ const ContextAuthProvider = ({children}) => {
       } catch (e) {}
       dispatch({type: 'RESTORE_TOKEN', token: userToken, avatar: avatar});
     };
+
     bootstrapAsync();
   }, []);
 

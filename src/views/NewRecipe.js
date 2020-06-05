@@ -25,6 +25,7 @@ const NewRecipe = ({navigation}) => {
     steps: [],
     image: '',
   });
+
   const onSave = () => {
     state.author = auth.userToken;
     state.avatar = auth.avatar;
@@ -39,8 +40,9 @@ const NewRecipe = ({navigation}) => {
 
     navigation.goBack();
   };
+
   return (
-    <Container>
+    <Container style={styles.container}>
       <Header androidStatusBarColor="#ef3e5c" style={styles.header}>
         <Left>
           <Button transparent onPress={navigation.goBack}>
@@ -63,6 +65,9 @@ const NewRecipe = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#ecedf3',
+  },
   content: {
     padding: 10,
   },

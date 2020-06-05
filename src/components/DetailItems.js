@@ -1,19 +1,13 @@
 import React, {useState} from 'react';
 import {StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import {View, Text} from 'native-base';
+
 const DetailItems = ({list, title}) => {
   const [markList, setMarkList] = useState(list.map(item => false));
+
   const listSeparator = item => {
     if (list.indexOf(item) + 1 !== list.length) {
-      return (
-        <View
-          style={{
-            height: 1,
-            width: '100%',
-            backgroundColor: '#e9ebf0',
-          }}
-        />
-      );
+      return <View style={styles.separator} />;
     }
   };
 
@@ -30,9 +24,10 @@ const DetailItems = ({list, title}) => {
       return {...styles.text};
     }
   };
+
   return (
-    <View style={{flex: 1, paddingBottom: 10}}>
-      <View style={{alignSelf: 'flex-start', padding: 15}}>
+    <View style={styles.view}>
+      <View style={styles.viewTitle}>
         <Text style={styles.title}>{title}</Text>
       </View>
       {list.length ? (
@@ -67,6 +62,19 @@ const styles = StyleSheet.create({
     color: '#777777',
     fontWeight: 'bold',
     alignSelf: 'center',
+  },
+  separator: {
+    height: 1,
+    width: '100%',
+    backgroundColor: '#e9ebf0',
+  },
+  view: {
+    flex: 1,
+    paddingBottom: 10,
+  },
+  viewTitle: {
+    alignSelf: 'flex-start',
+    padding: 15,
   },
 });
 

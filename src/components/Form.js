@@ -1,5 +1,4 @@
 import React from 'react';
-import ImagePicker from 'react-native-image-picker';
 import {StyleSheet, Image} from 'react-native';
 import {
   Label,
@@ -13,41 +12,19 @@ import {
   Textarea,
 } from 'native-base';
 import FormItems from './FormItems';
+import ChooseImage from '../utils/ChooseImage';
+
 const Form = ({recipe, onChangeRecipe}) => {
-  const chooseImage = () => {
-    let options = {
-      title: 'Selecione uma imagem',
-      takePhotoButtonTitle: 'Tire uma foto',
-      chooseFromLibraryButtonTitle: 'Escolha da galeria',
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-    ImagePicker.showImagePicker(options, response => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-        alert(response.customButton);
-      } else {
-        let image = response.uri;
-        onChangeRecipe({...recipe, image});
-      }
-    });
-  };
   return (
     <Content>
-      <Label style={{color: '#4d4e52'}}>Nome</Label>
-      <Item regular>
+      <Label style={styles.label}>Nome</Label>
+      <Item regular style={{backgroundColor: 'white'}}>
         <Input
           value={recipe.name}
           onChangeText={name => {
             onChangeRecipe({...recipe, name});
           }}
-          style={{color: '#4d4e52'}}
+          style={styles.inputColor}
         />
       </Item>
       <Label style={styles.label}>Descrição</Label>
@@ -58,7 +35,7 @@ const Form = ({recipe, onChangeRecipe}) => {
         onChangeText={description => {
           onChangeRecipe({...recipe, description});
         }}
-        style={{color: '#4d4e52'}}
+        style={styles.textarea}
       />
       <Label style={styles.label}>Ingredientes</Label>
       <FormItems
@@ -78,22 +55,21 @@ const Form = ({recipe, onChangeRecipe}) => {
       />
       <Label style={styles.label}>Foto</Label>
       {recipe.image ? (
-        <Image
-          source={{uri: recipe.image}}
-          style={{height: 100, width: 100, flex: 1, alignSelf: 'center'}}
-        />
+        <Image source={{uri: recipe.image}} style={styles.img} />
       ) : (
-        <Text style={{alignSelf: 'center', color: '#4d4e52'}}>Nenhuma Imagem</Text>
+        <Text style={styles.empty}>Nenhuma Imagem</Text>
       )}
 
-      <View style={{alignSelf: 'flex-end', marginTop: 20}}>
+      <View style={styles.viewBtn}>
         <Button
-          onPress={chooseImage}
+          onPress={() =>
+            ChooseImage(image => onChangeRecipe({...recipe, image}))
+          }
           bordered
           rounded
-          style={{borderColor: '#ef3e5c'}}>
-          <Icon name="image" type="FontAwesome" style={{color: '#ef3e5c'}} />
-          <Text style={{color: '#ef3e5c'}}>Escolha uma foto</Text>
+          style={styles.btn}>
+          <Icon name="image" type="FontAwesome" style={styles.textBtn} />
+          <Text style={styles.textBtn}>Escolha uma foto</Text>
         </Button>
       </View>
     </Content>
@@ -101,14 +77,30 @@ const Form = ({recipe, onChangeRecipe}) => {
 };
 
 const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
+  empty: {
+    alignSelf: 'center',
+    color: '#4d4e52',
+  },
+  img: {
+    height: 100,
+    width: 100,
+    flex: 1,
+    alignSelf: 'center',
+  },
+  textBtn: {color: '#ef3e5c'},
+  inputColor: {color: '#4d4e52'},
+  textarea: {
+    backgroundColor: 'white',
+    color: '#4d4e52',
   },
   label: {
     marginTop: 10,
     color: '#4d4e52',
+  },
+  btn: {borderColor: '#ef3e5c'},
+  viewBtn: {
+    alignSelf: 'flex-end',
+    marginTop: 20,
   },
 });
 
