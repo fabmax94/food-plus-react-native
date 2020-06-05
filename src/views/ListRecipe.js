@@ -1,8 +1,7 @@
-import React, {useEffect, useState, useContext} from 'react';
+import React, {useEffect, useContext, useReducer} from 'react';
 import {
   StyleSheet,
   TouchableOpacity,
-  Alert,
   TouchableWithoutFeedback,
 } from 'react-native';
 import {
@@ -29,18 +28,22 @@ import {SwipeListView} from 'react-native-swipe-list-view';
 import FastImage from 'react-native-fast-image';
 import {FirebaseService, PathRecipe} from '../services/FirebaseService';
 import {ContextAuth} from '../contexts/authContext';
+import {listReducer} from '../reducers/listReducer';
+import AlertDialog from '../utils/AlertDialog';
 
 const ListRecipe = ({navigation}) => {
   const {auth, signOut} = useContext(ContextAuth);
-  const [recipeList, setRecipeList] = useState([]);
-  const [recipeFilter, setRecipeFilter] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [search, setSearch] = useState('');
+
+  const [state, dispatch] = useReducer(listReducer, {
+    recipeList: [],
+    recipeFilter: [],
+    isLoading: true,
+    search: '',
+  });
+
   useEffect(() => {
     FirebaseService.getDataList(PathRecipe, result => {
-      setRecipeList(result);
-      setRecipeFilter(result);
-      setIsLoading(false);
+      dispatch({type: 'SET_LIST', recipeList: result, recipeFilter: result});
     });
   }, []);
 
@@ -51,86 +54,58 @@ const ListRecipe = ({navigation}) => {
       alert('Somente o autor da receita pode edita-lá');
     }
   };
+
   const onHandleDelete = item => {
     if (item.author === auth.userToken) {
-      Alert.alert(
+      AlertDialog(
         'Deletar Receita',
         'Você tem certeza que quer deletar a receita?',
-        [
-          {
-            text: 'Não',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {
-            text: 'Sim',
-            onPress: () => FirebaseService.popData(PathRecipe, {key: item.key}),
-          },
-        ],
-        {cancelable: false},
+        () => FirebaseService.popData(PathRecipe, {key: item.key}),
       );
     } else {
       alert('Somente o autor da receita pode deleta-lá');
     }
   };
 
-  const onSignOut = () => {
-    Alert.alert(
-      'Sair',
-      'Você deseja se desconectar?',
-      [
-        {
-          text: 'Não',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'Sim',
-          onPress: signOut,
-        },
-      ],
-      {cancelable: false},
-    );
-  };
+  const onSignOut = () =>
+    AlertDialog('Sair', 'Você deseja se desconectar?', signOut);
 
   const onSearch = e =>
-    setRecipeFilter(
-      recipeList.filter(
+    dispatch({
+      type: 'SET_LIST',
+      recipeList: state.recipeList,
+      recipeFilter: state.recipeList.filter(
         item =>
-          item.name.toLowerCase().includes(search.toLowerCase()) ||
-          item.author.toLowerCase().includes(search.toLowerCase()) ||
-          item.description.toLowerCase().includes(search.toLowerCase()),
+          item.name.toLowerCase().includes(state.search.toLowerCase()) ||
+          item.author.toLowerCase().includes(state.search.toLowerCase()) ||
+          item.description.toLowerCase().includes(state.search.toLowerCase()),
       ),
-    );
+    });
 
   return (
-    <Container>
+    <Container style={styles.container}>
       <Header androidStatusBarColor="#ef3e5c" style={styles.header}>
         <Body>
           <Title>Food Plus</Title>
         </Body>
         <Right>
           <TouchableOpacity onPress={onSignOut}>
-            <Icon name="sign-in" type="FontAwesome" style={{color: 'white'}} />
+            <Icon name="sign-in" type="FontAwesome" style={styles.signOutBtn} />
           </TouchableOpacity>
         </Right>
       </Header>
-      <Content>
-        {isLoading ? (
+      <Content style={styles.content}>
+        {state.isLoading ? (
           <Spinner color={'#ef3e5c'} />
         ) : (
-          <Form style={{marginTop: 10}}>
-            <Item rounded style={{borderColor: '#415a6b'}}>
-              <Icon
-                name={'search'}
-                type="FontAwesome"
-                style={{color: '#415a6b'}}
-              />
+          <Form style={styles.form}>
+            <Item rounded style={styles.formItem}>
+              <Icon name={'search'} type="FontAwesome" style={styles.icon} />
               <Input
                 placeholder={'Pesquisar'}
-                style={{color: '#415a6b'}}
-                value={search}
-                onChangeText={text => setSearch(text)}
+                style={styles.icon}
+                value={state.search}
+                onChangeText={search => dispatch({type: 'SET_SEARCH', search})}
                 onSubmitEditing={onSearch}
               />
             </Item>
@@ -138,14 +113,14 @@ const ListRecipe = ({navigation}) => {
         )}
 
         <SwipeListView
-          data={recipeFilter}
+          data={state.recipeFilter}
           renderItem={(data, rowMap) => (
             <TouchableWithoutFeedback
               onPress={() => {
                 rowMap[data.item.key].closeRow();
                 navigation.navigate('DetailRecipe', data.item);
               }}>
-              <View style={styles.rowFront}>
+              <View>
                 <Card key={data.item.key}>
                   <CardItem>
                     <Left>
@@ -163,15 +138,7 @@ const ListRecipe = ({navigation}) => {
                         />
                       )}
                       <Body>
-                        <Text
-                          style={{
-                            fontSize: 15,
-                            textTransform: 'uppercase',
-                            color: '#777777',
-                            fontWeight: 'bold',
-                          }}>
-                          {data.item.name}
-                        </Text>
+                        <Text style={styles.title}>{data.item.name}</Text>
                         <Text note>{data.item.author}</Text>
                       </Body>
                     </Left>
@@ -207,7 +174,7 @@ const ListRecipe = ({navigation}) => {
             </View>
           )}
           leftOpenValue={75}
-          rightOpenValue={-75}
+          rightOpenValue={-85}
         />
       </Content>
       <Fab
@@ -222,6 +189,17 @@ const ListRecipe = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  container: {backgroundColor: '#ecedf3'},
+  content: {padding: 5},
+  form: {marginTop: 10},
+  formItem: {borderColor: '#415a6b', backgroundColor: 'white'},
+  icon: {color: '#415a6b'},
+  title: {
+    fontSize: 15,
+    textTransform: 'uppercase',
+    color: '#777777',
+    fontWeight: 'bold',
+  },
   fab: {
     backgroundColor: '#ef3e5c',
   },
@@ -235,9 +213,6 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#ef3e5c',
-  },
-  container: {
-    flex: 1,
   },
   rowBack: {
     alignItems: 'center',
@@ -261,11 +236,12 @@ const styles = StyleSheet.create({
   },
   deleteBtn: {
     backgroundColor: '#f1726e',
-    right: 5,
+    right: 15,
   },
   textBtn: {
     color: '#FFF',
   },
+  signOutBtn: {color: 'white'},
 });
 
 export default ListRecipe;
