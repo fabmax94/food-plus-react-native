@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, ScrollView, Share} from 'react-native';
 import {
   Container,
@@ -15,76 +15,72 @@ import {
   Right,
 } from 'native-base';
 import FastImage from 'react-native-fast-image';
-import ListItems from '../components/ListItems';
+import DetailItems from '../components/DetailItems';
+
 const DetailRecipe = ({navigation, route}) => {
-  const [state, setState] = useState({
+  const recipe = {
     key: route.params.key,
     name: route.params.name,
     description: route.params.description,
     ingredients: route.params.ingredients ?? [],
     steps: route.params.steps ?? [],
     image: route.params.image,
-  });
+  };
+
   const onShare = async () => {
     let ingredients = '';
     let steps = '';
-    if (state.ingredients.length) {
+    if (recipe.ingredients.length) {
       ingredients =
         '*Ingredientes*:\n' +
-        state.ingredients
+        recipe.ingredients
           .map(
             item =>
               `* ${item}${
-                state.ingredients.indexOf(item) == state.ingredients.length - 1
+                recipe.ingredients.indexOf(item) ==
+                recipe.ingredients.length - 1
                   ? '.'
                   : ';'
               }`,
           )
           .join('\n');
     }
-    if (state.steps.length) {
+
+    if (recipe.steps.length) {
       steps =
         '*Passos*:\n' +
-        state.steps
+        recipe.steps
           .map(
             item =>
               `* ${item}${
-                state.steps.indexOf(item) == state.steps.length - 1 ? '.' : ';'
+                recipe.steps.indexOf(item) == recipe.steps.length - 1
+                  ? '.'
+                  : ';'
               }`,
           )
           .join('\n');
     }
-    let message = `*${state.name}*\n\n${
-      state.description
+
+    let message = `*${recipe.name}*\n\n${
+      recipe.description
     }\n\n${ingredients}\n\n${steps}`;
     try {
-      const result = await Share.share({
-        title: state.name,
+      await Share.share({
+        title: recipe.name,
         message: message,
       });
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // shared with activity type of result.activityType
-        } else {
-          // shared
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
-      }
     } catch (error) {
       alert(error.message);
     }
   };
   return (
-    <Container>
+    <Container style={styles.container}>
       <ScrollView>
-        {state.image ? (
-          <FastImage source={{uri: state.image}} style={styles.image}>
+        {recipe.image ? (
+          <FastImage source={{uri: recipe.image}} style={styles.image}>
             <Header
               androidStatusBarColor="transparent"
-              style={{
-                height: 100,
-              }}
+              style={styles.headerImage}
               transparent>
               <Left>
                 <Button transparent onPress={navigation.goBack}>
@@ -119,28 +115,21 @@ const DetailRecipe = ({navigation, route}) => {
           <Card>
             <CardItem>
               <Content>
-                <View style={{flex: 1, alignSelf: 'center'}}>
-                  <Text style={styles.title}>{state.name}</Text>
+                <View style={styles.viewTitle}>
+                  <Text style={styles.title}>{recipe.name}</Text>
                 </View>
-                <Text
-                  style={{
-                    marginTop: 10,
-                    color: '#4d4e52',
-                    textAlign: 'justify',
-                  }}>
-                  {state.description}
-                </Text>
+                <Text style={styles.description}>{recipe.description}</Text>
               </Content>
             </CardItem>
           </Card>
           <Card>
             <CardItem cardBody>
-              <ListItems list={state.ingredients} title={'Ingredientes'} />
+              <DetailItems list={recipe.ingredients} title={'Ingredientes'} />
             </CardItem>
           </Card>
           <Card>
             <CardItem cardBody>
-              <ListItems list={state.steps} title={'Passos'} />
+              <DetailItems list={recipe.steps} title={'Passos'} />
             </CardItem>
           </Card>
         </Content>
@@ -150,6 +139,19 @@ const DetailRecipe = ({navigation, route}) => {
 };
 
 const styles = StyleSheet.create({
+  container: {backgroundColor: '#ecedf3'},
+  headerImage: {
+    height: 100,
+  },
+  viewTitle: {
+    flex: 1,
+    alignSelf: 'center',
+  },
+  description: {
+    marginTop: 10,
+    color: '#4d4e52',
+    textAlign: 'justify',
+  },
   title: {
     fontSize: 20,
     textTransform: 'uppercase',

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import {View, Text} from 'native-base';
-const ListItems = ({list, title}) => {
+const DetailItems = ({list, title}) => {
   const [markList, setMarkList] = useState(list.map(item => false));
   const listSeparator = item => {
     if (list.indexOf(item) + 1 !== list.length) {
@@ -70,4 +70,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ListItems;
+export default DetailItems;
