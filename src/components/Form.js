@@ -41,7 +41,7 @@ const Form = ({recipe, onChangeRecipe}) => {
   return (
     <Content>
       <Label style={{color: '#4d4e52'}}>Nome</Label>
-      <Item>
+      <Item regular>
         <Input
           value={recipe.name}
           onChangeText={name => {

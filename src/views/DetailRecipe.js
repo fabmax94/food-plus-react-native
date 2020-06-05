@@ -78,13 +78,29 @@ const DetailRecipe = ({navigation, route}) => {
   return (
     <Container>
       <ScrollView>
-        <FastImage source={{uri: state.image}} style={styles.image}>
-          <Header
-            androidStatusBarColor="transparent"
-            style={{
-              height: 100,
-            }}
-            transparent>
+        {state.image ? (
+          <FastImage source={{uri: state.image}} style={styles.image}>
+            <Header
+              androidStatusBarColor="transparent"
+              style={{
+                height: 100,
+              }}
+              transparent>
+              <Left>
+                <Button transparent onPress={navigation.goBack}>
+                  <Icon name="arrow-back" />
+                </Button>
+              </Left>
+              <Body />
+              <Right>
+                <Button transparent onPress={onShare}>
+                  <Icon name="share" />
+                </Button>
+              </Right>
+            </Header>
+          </FastImage>
+        ) : (
+          <Header androidStatusBarColor="#ef3e5c" style={styles.header}>
             <Left>
               <Button transparent onPress={navigation.goBack}>
                 <Icon name="arrow-back" />
@@ -97,7 +113,8 @@ const DetailRecipe = ({navigation, route}) => {
               </Button>
             </Right>
           </Header>
-        </FastImage>
+        )}
+
         <Content>
           <Card>
             <CardItem>
@@ -152,6 +169,9 @@ const styles = StyleSheet.create({
     width: null,
     resizeMode: 'cover',
     margin: 0,
+  },
+  header: {
+    backgroundColor: '#ef3e5c',
   },
 });
 

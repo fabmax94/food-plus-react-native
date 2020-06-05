@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import {Item, Input, Button, Icon, Text, Content, View} from 'native-base';
+import DraggableFlatList from 'react-native-draggable-flatlist';
+
 const FormItems = ({items, onChange, placeholder}) => {
   const [itemList, setItemList] = useState(items);
   const handleChange = (index, newValue) => {
@@ -19,26 +21,50 @@ const FormItems = ({items, onChange, placeholder}) => {
   return (
     <Content>
       <View style={styles.listContainer}>
+        <DraggableFlatList
+          data={itemList}
+          renderItem={({item, index, drag, isActive}) => (
+            <TouchableOpacity
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onLongPress={drag}>
+              <View style={styles.itemContainer}>
+                <Icon
+                  name={'sort'}
+                  type={'FontAwesome'}
+                  style={{
+                    alignSelf: 'center',
+                    marginRight: 5,
+                    color: '#4d4e52',
+                  }}
+                />
+                <Item regular style={styles.input}>
+                  <Input
+                    value={item}
+                    onChangeText={text => handleChange(index, text)}
+                    placeholder={placeholder}
+                    style={{color: '#4d4e52'}}
+                  />
+                </Item>
+                <Button danger onPress={() => deleteItem(index)} transparent>
+                  <Icon name="trash" />
+                </Button>
+              </View>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item, index) => `${placeholder}${index}`}
+          onDragEnd={({data}) => {
+            setItemList([...data]);
+            onChange([...data]);
+          }}
+        />
         {itemList.length == 0 ? (
           <Text style={{alignSelf: 'center', color: '#4d4e52'}}>
             Nenhum {placeholder}
           </Text>
         ) : null}
-        {itemList.map((item, index) => (
-          <View key={`container${index}`} style={styles.itemContainer}>
-            <Item regular style={styles.input}>
-              <Input
-                value={item}
-                onChangeText={text => handleChange(index, text)}
-                placeholder={placeholder}
-                style={{color: '#4d4e52'}}
-              />
-            </Item>
-            <Button danger onPress={() => deleteItem(index)} transparent>
-              <Icon name="trash" />
-            </Button>
-          </View>
-        ))}
       </View>
       <View style={{alignSelf: 'flex-end'}}>
         <Button
