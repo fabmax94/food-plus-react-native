@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 20,
   },
-  form: {marginTop: 60},
+  form: {marginTop: 50},
   itemForm: {borderColor: '#415a6b'},
   icon: {color: '#415a6b'},
   viewBtn: {
@@ -111,11 +111,12 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   title: {
-    fontSize: 20,
+    fontSize: 21,
     textTransform: 'uppercase',
     color: '#ef3e5c',
     alignSelf: 'center',
-    fontStyle: 'italic',
+    fontWeight: 'bold',
+    marginTop: 20,
   },
 });
 
