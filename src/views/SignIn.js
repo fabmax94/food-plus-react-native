@@ -24,7 +24,7 @@ const SigIn = () => {
     avatar: '',
   });
 
-  return auth.isLoading ? null : (
+  return auth.isLoading && !auth.userToken ? null : (
     <Container style={styles.container}>
       <Header androidStatusBarColor="#ecedf3" transparent />
       <Content style={styles.content}>
@@ -32,6 +32,9 @@ const SigIn = () => {
           source={require('../assets/app_icon.png')}
           style={styles.logo}
         />
+        <View>
+          <Text style={styles.title}>Receitas com Amor</Text>
+        </View>
         <Form style={styles.form}>
           <Item rounded style={styles.itemForm}>
             <Icon active name={'person'} style={styles.icon} />
@@ -91,7 +94,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 20,
   },
-  form: {marginTop: 80},
+  form: {marginTop: 60},
   itemForm: {borderColor: '#415a6b'},
   icon: {color: '#415a6b'},
   viewBtn: {
@@ -106,6 +109,13 @@ const styles = StyleSheet.create({
   },
   iconArrow: {
     color: 'white',
+  },
+  title: {
+    fontSize: 20,
+    textTransform: 'uppercase',
+    color: '#ef3e5c',
+    alignSelf: 'center',
+    fontStyle: 'italic',
   },
 });
 

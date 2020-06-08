@@ -85,10 +85,13 @@ const ListRecipe = ({navigation}) => {
   return (
     <Container style={styles.container}>
       <Header androidStatusBarColor="#ef3e5c" style={styles.header}>
-        <Body>
-          <Title>Food Plus</Title>
+        <Left style={{flex: 1}}>
+          <Thumbnail small source={require('../assets/app_icon.png')} />
+        </Left>
+        <Body style={{flex: 4}}>
+          <Title>Receitas com Amor</Title>
         </Body>
-        <Right>
+        <Right style={{flex: 1}}>
           <TouchableOpacity onPress={onSignOut}>
             <Icon name="sign-in" type="FontAwesome" style={styles.signOutBtn} />
           </TouchableOpacity>

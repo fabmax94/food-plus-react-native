@@ -118,7 +118,9 @@ const DetailRecipe = ({navigation, route}) => {
                 <View style={styles.viewTitle}>
                   <Text style={styles.title}>{recipe.name}</Text>
                 </View>
-                <Text style={styles.description}>{recipe.description}</Text>
+                {recipe.description ? (
+                  <Text style={styles.description}>{recipe.description}</Text>
+                ) : null}
               </Content>
             </CardItem>
           </Card>
