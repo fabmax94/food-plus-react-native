@@ -11,6 +11,8 @@ import ListRecipe from './views/ListRecipe';
 import EditRecipe from './views/EditRecipe';
 import DetailRecipe from './views/DetailRecipe';
 import {ContextAuthProvider, ContextAuth} from './contexts/authContext';
+import FastImage from 'react-native-fast-image';
+import {StyleSheet, View} from 'react-native';
 
 const HorizontalTransition = {
   gestureDirection: 'horizontal',
@@ -38,7 +40,17 @@ const HorizontalTransition = {
 const Stack = createStackNavigator();
 
 const StackApp = () => {
-  const {auth} = useContext(ContextAuth);
+  const {auth, isLoading} = useContext(ContextAuth);
+  if (isLoading) {
+    return (
+      <View style={styles.contentImage}>
+        <FastImage
+          source={require('./assets/app_icon.png')}
+          style={styles.image}
+        />
+      </View>
+    );
+  }
   return (
     <NavigationContainer>
       <Stack.Navigator headerMode="none">
@@ -84,5 +96,18 @@ const App = () => {
     </ContextAuthProvider>
   );
 };
+
+const styles = StyleSheet.create({
+  image: {
+    width: 200,
+    height: 200,
+  },
+  contentImage: {
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+});
 
 export default App;

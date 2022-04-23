@@ -39,7 +39,12 @@ const ContextAuthProvider = ({children}) => {
       try {
         avatar = await AsyncStorage.getItem('userAvatar');
       } catch (e) {}
-      dispatch({type: 'RESTORE_TOKEN', token: userToken, avatar: avatar});
+      dispatch({
+        type: 'RESTORE_TOKEN',
+        token: userToken,
+        avatar: avatar,
+        isLoading: false,
+      });
     };
 
     bootstrapAsync();
