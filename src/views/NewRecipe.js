@@ -18,24 +18,17 @@ import {ContextAuth} from '../contexts/authContext';
 
 const NewRecipe = ({navigation}) => {
   const {auth} = useContext(ContextAuth);
-  const [state, setState] = useState({
-    name: '',
-    description: '',
-    ingredients: [],
-    steps: [],
-    image: '',
-  });
 
-  const onSave = () => {
-    state.author = auth.userToken;
-    state.avatar = auth.avatar;
-    if (state.image) {
-      FirebaseService.pushFile(state.image, url => {
-        state.image = url;
-        FirebaseService.pushData(PathRecipe, state);
+  const onSave = recipe => {
+    recipe.author = auth.userToken;
+    recipe.avatar = auth.avatar;
+    if (recipe.image) {
+      FirebaseService.pushFile(recipe.image, url => {
+        recipe.image = url;
+        FirebaseService.pushData(PathRecipe, recipe);
       });
     } else {
-      FirebaseService.pushData(PathRecipe, state);
+      FirebaseService.pushData(PathRecipe, recipe);
     }
 
     navigation.goBack();
@@ -55,10 +48,7 @@ const NewRecipe = ({navigation}) => {
         <Right />
       </Header>
       <Content style={styles.content}>
-        <Form recipe={state} onChangeRecipe={recipe => setState(recipe)} />
-        <Button onPress={onSave} full rounded style={styles.btnSave}>
-          <Text style={{color: 'white'}}>Salvar</Text>
-        </Button>
+        <Form onHandleSave={onSave} />
       </Content>
     </Container>
   );

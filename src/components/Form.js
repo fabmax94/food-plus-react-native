@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Image} from 'react-native';
 import {
   Label,
@@ -14,65 +14,91 @@ import {
 import FormItems from './FormItems';
 import ChooseImage from '../utils/ChooseImage';
 
-const Form = ({recipe, onChangeRecipe}) => {
-  return (
-    <Content>
-      <Label style={styles.label}>Nome</Label>
-      <Item regular style={{backgroundColor: 'white'}}>
-        <Input
-          value={recipe.name}
-          onChangeText={name => {
-            onChangeRecipe({...recipe, name});
-          }}
-          style={styles.inputColor}
-        />
-      </Item>
-      <Label style={styles.label}>Descrição</Label>
-      <Textarea
-        rowSpan={5}
-        bordered
-        value={recipe.description}
-        onChangeText={description => {
-          onChangeRecipe({...recipe, description});
-        }}
-        style={styles.textarea}
-      />
-      <Label style={styles.label}>Ingredientes</Label>
-      <FormItems
-        items={recipe.ingredients}
-        placeholder={'Ingrediente'}
-        onChange={ingredients => {
-          onChangeRecipe({...recipe, ingredients});
-        }}
-      />
-      <Label style={styles.label}>Passos</Label>
-      <FormItems
-        items={recipe.steps}
-        placeholder={'Passo'}
-        onChange={steps => {
-          onChangeRecipe({...recipe, steps});
-        }}
-      />
-      <Label style={styles.label}>Foto</Label>
-      {recipe.image ? (
-        <Image source={{uri: recipe.image}} style={styles.img} />
-      ) : (
-        <Text style={styles.empty}>Nenhuma Imagem</Text>
-      )}
+const initState = {
+  name: '',
+  description: '',
+  ingredients: [],
+  steps: [],
+  image: '',
+  ingredientsText: '',
+  stepsText: '',
+};
+const Form = ({initRecipe, onHandleSave}) => {
+  const [recipe, setRecipe] = useState({...initState, ...initRecipe});
 
-      <View style={styles.viewBtn}>
-        <Button
-          onPress={() =>
-            ChooseImage(image => onChangeRecipe({...recipe, image}))
-          }
+  return (
+    <>
+      <Content>
+        <Label style={styles.label}>Nome</Label>
+        <Item regular style={{backgroundColor: 'white'}}>
+          <Input
+            value={recipe.name}
+            onChangeText={name => {
+              setRecipe({...recipe, name});
+            }}
+            style={styles.inputColor}
+          />
+        </Item>
+        <Label style={styles.label}>Descrição</Label>
+        <Textarea
+          rowSpan={5}
           bordered
-          rounded
-          style={styles.btn}>
-          <Icon name="image" type="FontAwesome" style={styles.textBtn} />
-          <Text style={styles.textBtn}>Escolha uma foto</Text>
-        </Button>
-      </View>
-    </Content>
+          value={recipe.description}
+          onChangeText={description => {
+            setRecipe({...recipe, description});
+          }}
+          style={styles.textarea}
+        />
+        <Label style={styles.label}>Ingredientes</Label>
+        <FormItems
+          itemText={recipe.ingredientsText}
+          items={recipe.ingredients}
+          placeholder={'Ingrediente'}
+          onChangeList={ingredients => {
+            setRecipe({...recipe, ingredients});
+          }}
+          onChange={(ingredients, ingredientsText) => {
+            setRecipe({...recipe, ingredients, ingredientsText});
+          }}
+        />
+        <Label style={styles.label}>Passos</Label>
+        <FormItems
+          itemText={recipe.stepsText}
+          items={recipe.steps}
+          placeholder={'Passo'}
+          onChangeList={steps => {
+            setRecipe({...recipe, steps});
+          }}
+          onChange={(steps, stepsText) => {
+            setRecipe({...recipe, steps, stepsText});
+          }}
+        />
+        <Label style={styles.label}>Foto</Label>
+        {recipe.image ? (
+          <Image source={{uri: recipe.image}} style={styles.img} />
+        ) : (
+          <Text style={styles.empty}>Nenhuma Imagem</Text>
+        )}
+
+        <View style={styles.viewBtn}>
+          <Button
+            onPress={() => ChooseImage(image => setRecipe({...recipe, image}))}
+            bordered
+            rounded
+            style={styles.btn}>
+            <Icon name="image" type="FontAwesome" style={styles.textBtn} />
+            <Text style={styles.textBtn}>Escolha uma foto</Text>
+          </Button>
+        </View>
+      </Content>
+      <Button
+        onPress={() => onHandleSave(recipe)}
+        full
+        rounded
+        style={styles.btnSave}>
+        <Text style={{color: 'white'}}>Salvar</Text>
+      </Button>
+    </>
   );
 };
 
@@ -101,6 +127,11 @@ const styles = StyleSheet.create({
   viewBtn: {
     alignSelf: 'flex-end',
     marginTop: 20,
+  },
+  btnSave: {
+    marginTop: 20,
+    marginBottom: 20,
+    backgroundColor: '#415a6b',
   },
 });
 

@@ -18,7 +18,8 @@ import {ContextAuth} from '../contexts/authContext';
 
 const EditRecipe = ({navigation, route}) => {
   const {auth} = useContext(ContextAuth);
-  const [state, setState] = useState({
+
+  const initRecipe = {
     key: route.params.key,
     name: route.params.name,
     description: route.params.description,
@@ -27,18 +28,18 @@ const EditRecipe = ({navigation, route}) => {
     image: route.params.image,
     author: route.params.author,
     avatar: route.params.avatar,
-  });
+  };
 
-  const onEdit = () => {
-    state.author = auth.userToken;
-    state.avatar = auth.avatar;
-    if (state.image && !state.image.includes('http')) {
-      FirebaseService.pushFile(state.image, url => {
-        state.image = url;
-        FirebaseService.pushData(PathRecipe, state);
+  const onEdit = recipe => {
+    recipe.author = auth.userToken;
+    recipe.avatar = auth.avatar;
+    if (recipe.image && !recipe.image.includes('http')) {
+      FirebaseService.pushFile(recipe.image, url => {
+        recipe.image = url;
+        FirebaseService.pushData(PathRecipe, recipe);
       });
     } else {
-      FirebaseService.pushData(PathRecipe, state);
+      FirebaseService.pushData(PathRecipe, recipe);
     }
 
     navigation.goBack();
@@ -58,10 +59,7 @@ const EditRecipe = ({navigation, route}) => {
         <Right />
       </Header>
       <Content style={styles.content}>
-        <Form recipe={state} onChangeRecipe={recipe => setState(recipe)} />
-        <Button onPress={onEdit} full rounded style={styles.btnSave}>
-          <Text style={{color: 'white'}}>Salvar</Text>
-        </Button>
+        <Form initRecipe={initRecipe} onHandleSave={onEdit} />
       </Content>
     </Container>
   );
