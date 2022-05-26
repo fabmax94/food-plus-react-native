@@ -1,5 +1,5 @@
-import React, {useState, useContext} from 'react';
-import {StyleSheet} from 'react-native';
+import React, { useContext } from "react";
+import { StyleSheet } from "react-native";
 import {
   Container,
   Header,
@@ -8,25 +8,33 @@ import {
   Title,
   Button,
   Icon,
-  Text,
   Content,
   Right,
-} from 'native-base';
-import Form from '../components/Form';
-import {FirebaseService, PathRecipe} from '../services/FirebaseService';
-import {ContextAuth} from '../contexts/authContext';
+} from "native-base";
+import Form from "../components/Form";
+import { FirebaseService, PathRecipe } from "../services/FirebaseService";
+import { ContextAuth } from "../contexts/authContext";
 
-const NewRecipe = ({navigation}) => {
-  const {auth} = useContext(ContextAuth);
+const NewRecipe = ({ navigation }) => {
+  const { auth } = useContext(ContextAuth);
 
-  const onSave = recipe => {
+  const onSave = async recipe => {
     recipe.author = auth.userToken;
     recipe.avatar = auth.avatar;
-    if (recipe.image) {
-      FirebaseService.pushFile(recipe.image, url => {
-        recipe.image = url;
-        FirebaseService.pushData(PathRecipe, recipe);
-      });
+    if (recipe.gallery.length) {
+      const newMedias = [];
+      for (let item of recipe.gallery) {
+        const url = await FirebaseService.pushFile(item.media);
+        if (item.media === recipe.image) {
+          recipe.image = url;
+        }
+        newMedias.push({
+          type: item.type,
+          media: url,
+        });
+      }
+      recipe.gallery = newMedias;
+      FirebaseService.pushData(PathRecipe, recipe);
     } else {
       FirebaseService.pushData(PathRecipe, recipe);
     }
@@ -56,7 +64,7 @@ const NewRecipe = ({navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ecedf3',
+    backgroundColor: "#ecedf3",
   },
   content: {
     padding: 10,
@@ -64,10 +72,10 @@ const styles = StyleSheet.create({
   btnSave: {
     marginTop: 20,
     marginBottom: 20,
-    backgroundColor: '#415a6b',
+    backgroundColor: "#415a6b",
   },
   header: {
-    backgroundColor: '#ef3e5c',
+    backgroundColor: "#ef3e5c",
   },
 });
 

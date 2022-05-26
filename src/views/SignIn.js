@@ -1,5 +1,5 @@
-import React, {useState, useContext} from 'react';
-import {StyleSheet} from 'react-native';
+import React, { useState, useContext } from "react";
+import { StyleSheet } from "react-native";
 import {
   Content,
   Form,
@@ -12,24 +12,23 @@ import {
   Header,
   View,
   Thumbnail,
-} from 'native-base';
-import FastImage from 'react-native-fast-image';
-import {ContextAuth} from '../contexts/authContext';
-import ChooseImage from '../utils/ChooseImage';
+} from "native-base";
+import FastImage from "react-native-fast-image";
+import { ContextAuth } from "../contexts/authContext";
+import { ChooseImage } from "../utils/ChooseMedia";
 
 const SigIn = () => {
-  const {signIn, auth} = useContext(ContextAuth);
+  const { signIn, auth } = useContext(ContextAuth);
   const [data, setData] = useState({
-    name: '',
-    avatar: '',
+    name: "",
+    avatar: "",
   });
-
-  return auth.isLoading && !auth.userToken ? null : (
+  return auth.isLoading || auth.userToken ? null : (
     <Container style={styles.container}>
       <Header androidStatusBarColor="#ecedf3" transparent />
       <Content style={styles.content}>
         <FastImage
-          source={require('../assets/app_icon.png')}
+          source={require("../assets/app_icon.png")}
           style={styles.logo}
         />
         <View>
@@ -37,12 +36,12 @@ const SigIn = () => {
         </View>
         <Form style={styles.form}>
           <Item rounded style={styles.itemForm}>
-            <Icon active name={'person'} style={styles.icon} />
+            <Icon active name={"person"} style={styles.icon} />
             <Input
-              placeholder={'Nome'}
+              placeholder={"Nome"}
               style={styles.icon}
               value={data.name}
-              onChangeText={name => setData({...data, name})}
+              onChangeText={name => setData({ ...data, name })}
             />
           </Item>
         </Form>
@@ -51,7 +50,7 @@ const SigIn = () => {
             bordered
             rounded
             style={styles.itemForm}
-            onPress={() => ChooseImage(avatar => setData({...data, avatar}))}>
+            onPress={() => ChooseImage(avatar => setData({ ...data, avatar }))}>
             <Text style={styles.icon}>Escolha seu avatar</Text>
             {data.avatar ? (
               <Thumbnail
@@ -79,28 +78,28 @@ const SigIn = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ecedf3',
+    backgroundColor: "#ecedf3",
   },
   content: {
     padding: 10,
   },
   btn: {
-    backgroundColor: '#415a6b',
-    alignSelf: 'center',
+    backgroundColor: "#415a6b",
+    alignSelf: "center",
   },
   logo: {
     width: 200,
     height: 200,
-    alignSelf: 'center',
+    alignSelf: "center",
     marginTop: 20,
   },
-  form: {marginTop: 50},
-  itemForm: {borderColor: '#415a6b'},
-  icon: {color: '#415a6b'},
+  form: { marginTop: 50 },
+  itemForm: { borderColor: "#415a6b" },
+  icon: { color: "#415a6b" },
   viewBtn: {
     marginTop: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   thumbnail: {
     width: 40,
@@ -108,14 +107,14 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   iconArrow: {
-    color: 'white',
+    color: "white",
   },
   title: {
     fontSize: 21,
-    textTransform: 'uppercase',
-    color: '#ef3e5c',
-    alignSelf: 'center',
-    fontWeight: 'bold',
+    textTransform: "uppercase",
+    color: "#ef3e5c",
+    alignSelf: "center",
+    fontWeight: "bold",
     marginTop: 20,
   },
 });

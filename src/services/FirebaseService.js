@@ -1,13 +1,13 @@
-import {firebaseDatabase, firebaseStorage} from '../../firebase';
-import RNFetchBlob from 'react-native-fetch-blob';
+import { firebaseDatabase, firebaseStorage } from "../../firebase";
+import RNFetchBlob from "react-native-fetch-blob";
 
 const fs = RNFetchBlob.fs;
 const Blob = RNFetchBlob.polyfill.Blob;
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
 window.Blob = Blob;
 
-export const PathRecipe = 'recipe';
-export const PathImages = 'images';
+export const PathRecipe = "recipe";
+export const PathImages = "images";
 
 export class FirebaseService {
   static listener;
@@ -15,10 +15,10 @@ export class FirebaseService {
   static getDataList = (nodePath, callback, keyFilter = null) => {
     let query = firebaseDatabase.ref(nodePath);
     if (keyFilter) {
-      query = query.orderByChild('parent').equalTo(keyFilter);
+      query = query.orderByChild("parent").equalTo(keyFilter);
     }
 
-    FirebaseService.listener = query.on('value', dataSnapshot => {
+    FirebaseService.listener = query.on("value", dataSnapshot => {
       let items = [];
       dataSnapshot.forEach(childSnapshot => {
         let item = childSnapshot.val();
@@ -32,7 +32,7 @@ export class FirebaseService {
   };
 
   static pushData = (node, objToSubmit) => {
-    let ref = null;
+    let ref;
     if (objToSubmit.key) {
       ref = firebaseDatabase.ref(node).child(objToSubmit.key);
     } else {
@@ -48,24 +48,13 @@ export class FirebaseService {
     ref.remove();
   };
 
-  static pushFile = (uploadUri, callback) => {
+  static pushFile = async (uploadUri) => {
     const sessionId = new Date().getTime();
-    let uploadBlob = null;
     const imageRef = firebaseStorage.ref(PathImages).child(`${sessionId}`);
-    fs.readFile(uploadUri, 'base64')
-      .then(data => {
-        return Blob.build(data, {type: 'image/jpeg;BASE64'});
-      })
-      .then(blob => {
-        uploadBlob = blob;
-        return imageRef.put(blob, {contentType: 'image/jpeg'});
-      })
-      .then(() => {
-        uploadBlob.close();
-        return imageRef.getDownloadURL();
-      })
-      .then(url => {
-        callback(url);
-      });
+    const data = await fs.readFile(uploadUri, "base64");
+    const blob = await Blob.build(data, { type: "image/jpeg;BASE64" });
+    await imageRef.put(blob, { contentType: "image/jpeg" });
+    await blob.close();
+    return await imageRef.getDownloadURL();
   };
 }

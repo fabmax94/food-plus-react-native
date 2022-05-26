@@ -1,5 +1,5 @@
-import React from 'react';
-import {StyleSheet, ScrollView, Share} from 'react-native';
+import React from "react";
+import { StyleSheet, ScrollView, Share, Image } from "react-native";
 import {
   Container,
   Header,
@@ -13,11 +13,13 @@ import {
   Card,
   View,
   Right,
-} from 'native-base';
-import FastImage from 'react-native-fast-image';
-import DetailItems from '../components/DetailItems';
+} from "native-base";
+import FastImage from "react-native-fast-image";
+import DetailItems from "../components/DetailItems";
+import Video from "react-native-video";
+import Carousel from "react-native-snap-carousel";
 
-const DetailRecipe = ({navigation, route}) => {
+const DetailRecipe = ({ navigation, route }) => {
   const recipe = {
     key: route.params.key,
     name: route.params.name,
@@ -25,40 +27,41 @@ const DetailRecipe = ({navigation, route}) => {
     ingredients: route.params.ingredients ?? [],
     steps: route.params.steps ?? [],
     image: route.params.image,
+    gallery: route.params.gallery ?? [],
   };
 
   const onShare = async () => {
-    let ingredients = '';
-    let steps = '';
+    let ingredients = "";
+    let steps = "";
     if (recipe.ingredients.length) {
       ingredients =
-        '*Ingredientes*:\n' +
+        "*Ingredientes*:\n" +
         recipe.ingredients
           .map(
             item =>
               `* ${item}${
-                recipe.ingredients.indexOf(item) ==
+                recipe.ingredients.indexOf(item) ===
                 recipe.ingredients.length - 1
-                  ? '.'
-                  : ';'
+                  ? "."
+                  : ";"
               }`,
           )
-          .join('\n');
+          .join("\n");
     }
 
     if (recipe.steps.length) {
       steps =
-        '*Passos*:\n' +
+        "*Passos*:\n" +
         recipe.steps
           .map(
             item =>
               `* ${item}${
-                recipe.steps.indexOf(item) == recipe.steps.length - 1
-                  ? '.'
-                  : ';'
+                recipe.steps.indexOf(item) === recipe.steps.length - 1
+                  ? "."
+                  : ";"
               }`,
           )
-          .join('\n');
+          .join("\n");
     }
 
     let message = `*${recipe.name}*\n\n${
@@ -73,11 +76,12 @@ const DetailRecipe = ({navigation, route}) => {
       alert(error.message);
     }
   };
+  const gallery = recipe.gallery.length ? recipe.gallery : [{ media: recipe.image, type: "photo" }];
   return (
     <Container style={styles.container}>
       <ScrollView>
         {recipe.image ? (
-          <FastImage source={{uri: recipe.image}} style={styles.image}>
+          <FastImage source={{ uri: recipe.image }} style={styles.image}>
             <Header
               androidStatusBarColor="transparent"
               style={styles.headerImage}
@@ -126,14 +130,43 @@ const DetailRecipe = ({navigation, route}) => {
           </Card>
           <Card>
             <CardItem cardBody>
-              <DetailItems list={recipe.ingredients} title={'Ingredientes'} />
+              <DetailItems list={recipe.ingredients} title={"Ingredientes"} />
             </CardItem>
           </Card>
           <Card>
             <CardItem cardBody>
-              <DetailItems list={recipe.steps} title={'Passos'} />
+              <DetailItems list={recipe.steps} title={"Passos"} />
             </CardItem>
           </Card>
+          {gallery.length ? (
+            <Card>
+              <CardItem cardBody>
+                <View style={{
+                  flex: 1,
+                  paddingBottom: 10,
+                  alignItems: "center",
+                }}>
+                  <View style={styles.viewTitleGallery}>
+                    <Text style={styles.titleGallery}>Galeria</Text>
+                  </View>
+                  <Carousel
+                    layout={"default"}
+                    data={gallery}
+                    sliderWidth={380}
+                    itemWidth={300}
+                    renderItem={({ item }) => {
+                      return (
+                        item.type === "video" ? (
+                          <Video source={{ uri: item.media }} style={styles.image} controls />
+                        ) : (
+                          <Image source={{ uri: item.media }} style={styles.image} />
+                        )
+                      );
+                    }} />
+                </View>
+              </CardItem>
+            </Card>
+          ) : null}
         </Content>
       </ScrollView>
     </Container>
@@ -141,25 +174,25 @@ const DetailRecipe = ({navigation, route}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {backgroundColor: '#ecedf3'},
+  container: { backgroundColor: "#ecedf3" },
   headerImage: {
     height: 100,
   },
   viewTitle: {
     flex: 1,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   description: {
     marginTop: 10,
-    color: '#4d4e52',
-    textAlign: 'justify',
+    color: "#4d4e52",
+    textAlign: "justify",
   },
   title: {
     fontSize: 20,
-    textTransform: 'uppercase',
-    color: '#777777',
-    fontWeight: 'bold',
-    alignSelf: 'center',
+    textTransform: "uppercase",
+    color: "#777777",
+    fontWeight: "bold",
+    alignSelf: "center",
   },
   content: {
     margin: 0,
@@ -171,11 +204,21 @@ const styles = StyleSheet.create({
   image: {
     height: 200,
     width: null,
-    resizeMode: 'cover',
+    resizeMode: "cover",
     margin: 0,
   },
   header: {
-    backgroundColor: '#ef3e5c',
+    backgroundColor: "#ef3e5c",
+  },
+  titleGallery: {
+    fontSize: 18,
+    color: "#777777",
+    fontWeight: "bold",
+    alignSelf: "center",
+  },
+  viewTitleGallery: {
+    alignSelf: "flex-start",
+    padding: 15,
   },
 });
 
