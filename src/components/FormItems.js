@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import React, { useState } from "react";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import {
   Item,
   Input,
@@ -9,11 +9,11 @@ import {
   Content,
   View,
   Textarea,
-} from 'native-base';
-import DraggableFlatList from 'react-native-draggable-flatlist';
-import {getInitText} from '../utils/functions';
+} from "native-base";
+import DraggableFlatList from "react-native-draggable-flatlist";
+import { getInitText } from "../utils/functions";
 
-const FormItems = ({itemText, items, onChangeList, onChange, placeholder}) => {
+const FormItems = ({ itemText, items, onChangeList, onChange, placeholder }) => {
   const [itemList, setItemList] = useState(items);
   const [isList, setIsList] = useState(false);
   const handleChange = (index, newValue) => {
@@ -22,11 +22,11 @@ const FormItems = ({itemText, items, onChangeList, onChange, placeholder}) => {
     onChangeList(itemList);
   };
   const deleteItem = indexToDelete => {
-    setItemList(itemList.filter((item, index) => index != indexToDelete));
-    onChangeList(itemList.filter((item, index) => index != indexToDelete));
+    setItemList(itemList.filter((item, index) => index !== indexToDelete));
+    onChangeList(itemList.filter((item, index) => index !== indexToDelete));
   };
   const addItem = () => {
-    setItemList([...itemList, '']);
+    setItemList([...itemList, ""]);
     onChangeList(itemList);
   };
   return (
@@ -35,21 +35,21 @@ const FormItems = ({itemText, items, onChangeList, onChange, placeholder}) => {
         <View style={styles.listContainer}>
           <DraggableFlatList
             data={itemList}
-            renderItem={({item, index, drag, isActive}) => (
+            renderItem={({ item, index, drag }) => (
               <TouchableOpacity
                 style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
                 onLongPress={drag}>
                 <View style={styles.itemContainer}>
                   <Icon
-                    name={'sort'}
-                    type={'FontAwesome'}
+                    name={"sort"}
+                    type={"FontAwesome"}
                     style={{
-                      alignSelf: 'center',
+                      alignSelf: "center",
                       marginRight: 5,
-                      color: '#4d4e52',
+                      color: "#4d4e52",
                     }}
                   />
                   <Item regular style={styles.input}>
@@ -57,7 +57,7 @@ const FormItems = ({itemText, items, onChangeList, onChange, placeholder}) => {
                       value={item}
                       onChangeText={text => handleChange(index, text)}
                       placeholder={placeholder}
-                      style={{color: '#4d4e52'}}
+                      style={{ color: "#4d4e52" }}
                     />
                   </Item>
                   <Button danger onPress={() => deleteItem(index)} transparent>
@@ -67,13 +67,13 @@ const FormItems = ({itemText, items, onChangeList, onChange, placeholder}) => {
               </TouchableOpacity>
             )}
             keyExtractor={(item, index) => `${placeholder}${index}`}
-            onDragEnd={({data}) => {
+            onDragEnd={({ data }) => {
               setItemList([...data]);
               onChangeList([...data]);
             }}
           />
-          {itemList.length == 0 ? (
-            <Text style={{alignSelf: 'center', color: '#4d4e52'}}>
+          {!itemList.length ? (
+            <Text style={{ alignSelf: "center", color: "#4d4e52" }}>
               Nenhum {placeholder}
             </Text>
           ) : null}
@@ -86,7 +86,7 @@ const FormItems = ({itemText, items, onChangeList, onChange, placeholder}) => {
             value={getInitText(itemText, items)}
             onChangeText={ingredientsText => {
               const ingredients = ingredientsText
-                .split('\n')
+                .split("\n")
                 .filter(t => t.trim())
                 .map(t => t.trim());
               onChange(ingredients, ingredientsText);
@@ -96,14 +96,15 @@ const FormItems = ({itemText, items, onChangeList, onChange, placeholder}) => {
         </View>
       )}
 
-      <View style={{alignSelf: 'flex-end', flexDirection: 'row'}}>
+      <View style={{ alignSelf: "flex-end", flexDirection: "row", flex: 1 }}>
         <Button
           onPress={() => setIsList(!isList)}
           bordered
           rounded
-          style={{borderColor: '#3e70ef', marginRight: 5}}>
-          <Text style={{color: '#3e70ef'}}>
-            {isList ? 'Trocar pra texto' : 'Trocar para lista'}
+          style={{ borderColor: "#3e70ef", marginRight: 5 }}>
+          <Icon name="swap" type="Entypo" style={{ color: "#3e70ef" }} />
+          <Text style={{ color: "#3e70ef" }}>
+            {isList ? "Texto" : "Lista"}
           </Text>
         </Button>
         {isList ? (
@@ -111,9 +112,9 @@ const FormItems = ({itemText, items, onChangeList, onChange, placeholder}) => {
             onPress={addItem}
             bordered
             rounded
-            style={{borderColor: '#ef3e5c'}}>
-            <Icon name="plus" type="FontAwesome" style={{color: '#ef3e5c'}} />
-            <Text style={{color: '#ef3e5c'}}>{placeholder}</Text>
+            style={{ borderColor: "#ef3e5c" }}>
+            <Icon name="plus" type="FontAwesome" style={{ color: "#ef3e5c" }} />
+            <Text style={{ color: "#ef3e5c" }}>{placeholder}</Text>
           </Button>
         ) : null}
       </View>
@@ -127,16 +128,16 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   itemContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 5,
   },
   input: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   textarea: {
-    backgroundColor: 'white',
-    color: '#4d4e52',
+    backgroundColor: "white",
+    color: "#4d4e52",
   },
 });
 

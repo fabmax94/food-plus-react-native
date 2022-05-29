@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { StyleSheet } from "react-native";
 import {
   Container,
@@ -17,8 +17,10 @@ import { ContextAuth } from "../contexts/authContext";
 
 const NewRecipe = ({ navigation }) => {
   const { auth } = useContext(ContextAuth);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSave = async recipe => {
+    setIsLoading(true);
     recipe.author = auth.userToken;
     recipe.avatar = auth.avatar;
     if (recipe.gallery.length) {
@@ -39,6 +41,7 @@ const NewRecipe = ({ navigation }) => {
       FirebaseService.pushData(PathRecipe, recipe);
     }
 
+    setIsLoading(false);
     navigation.goBack();
   };
 
@@ -56,7 +59,7 @@ const NewRecipe = ({ navigation }) => {
         <Right />
       </Header>
       <Content style={styles.content}>
-        <Form onHandleSave={onSave} />
+        <Form isLoading={isLoading} onHandleSave={onSave} />
       </Content>
     </Container>
   );

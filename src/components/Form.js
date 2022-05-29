@@ -9,7 +9,7 @@ import {
   Text,
   Content,
   View,
-  Textarea,
+  Textarea, Spinner,
 } from "native-base";
 import FormItems from "./FormItems";
 import { ChooseImage, ChooseVideo } from "../utils/ChooseMedia";
@@ -26,14 +26,13 @@ const initState = {
   stepsText: "",
   gallery: [],
 };
-const Form = ({ initRecipe, onHandleSave }) => {
+const Form = ({ initRecipe, onHandleSave, isLoading }) => {
   const [recipe, setRecipe] = useState({ ...initState, ...initRecipe });
 
   const removeMedia = (item) => {
     const newGallery = recipe.gallery.filter(media => media !== item);
     setRecipe({ ...recipe, gallery: newGallery });
   };
-  console.log(recipe.image, recipe.gallery);
   return (
     <>
       <Content>
@@ -97,7 +96,7 @@ const Form = ({ initRecipe, onHandleSave }) => {
                   AlertDialog("Deletar", "Você deseja deletar está media?", () => removeMedia(item));
                 }}>
                 {item.type === "video" ? (
-                  <Video source={{ uri: item.media }} style={styles.img} controls />
+                  <Video repeat resizeMode={"cover"} source={{ uri: item.media }} style={styles.img} />
                 ) : (
                   <Image source={{ uri: item.media }}
                          style={{ ...styles.img, ...(item.media === recipe.image ? styles.mediaSelected : {}) }} />
@@ -142,10 +141,12 @@ const Form = ({ initRecipe, onHandleSave }) => {
         </View>
       </Content>
       <Button
+        disabled={isLoading}
         onPress={() => onHandleSave(recipe)}
         full
         rounded
         style={styles.btnSave}>
+        {isLoading ? (<Spinner color={"white"} />) : null}
         <Text style={{ color: "white" }}>Salvar</Text>
       </Button>
     </>

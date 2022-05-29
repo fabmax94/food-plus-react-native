@@ -157,7 +157,7 @@ const DetailRecipe = ({ navigation, route }) => {
                     renderItem={({ item }) => {
                       return (
                         item.type === "video" ? (
-                          <Video source={{ uri: item.media }} style={styles.image} controls />
+                          <Video resizeMode={'cover'} source={{ uri: item.media }} style={styles.image} controls />
                         ) : (
                           <Image source={{ uri: item.media }} style={styles.image} />
                         )
