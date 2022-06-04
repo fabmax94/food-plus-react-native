@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Image, FlatList, TouchableOpacity } from "react-native";
+import { StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import {
   Label,
   Item,
@@ -15,6 +15,7 @@ import FormItems from "./FormItems";
 import { ChooseImage, ChooseVideo } from "../utils/ChooseMedia";
 import Video from "react-native-video";
 import AlertDialog from "../utils/AlertDialog";
+import FastImage from "react-native-fast-image";
 
 const initState = {
   name: "",
@@ -98,8 +99,8 @@ const Form = ({ initRecipe, onHandleSave, isLoading }) => {
                 {item.type === "video" ? (
                   <Video repeat resizeMode={"cover"} source={{ uri: item.media }} style={styles.img} />
                 ) : (
-                  <Image source={{ uri: item.media }}
-                         style={{ ...styles.img, ...(item.media === recipe.image ? styles.mediaSelected : {}) }} />
+                  <FastImage source={{ uri: item.media }}
+                             style={{ ...styles.img, ...(item.media === recipe.image ? styles.mediaSelected : {}) }} />
                 )}
               </TouchableOpacity>
             )}

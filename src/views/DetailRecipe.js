@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, ScrollView, Share, Image } from "react-native";
+import { StyleSheet, ScrollView, Share } from "react-native";
 import {
   Container,
   Header,
@@ -71,6 +71,7 @@ const DetailRecipe = ({ navigation, route }) => {
       await Share.share({
         title: recipe.name,
         message: message,
+        url: recipe.image,
       });
     } catch (error) {
       alert(error.message);
@@ -157,9 +158,9 @@ const DetailRecipe = ({ navigation, route }) => {
                     renderItem={({ item }) => {
                       return (
                         item.type === "video" ? (
-                          <Video resizeMode={'cover'} source={{ uri: item.media }} style={styles.image} controls />
+                          <Video repeat resizeMode={"cover"} source={{ uri: item.media }} style={styles.image} />
                         ) : (
-                          <Image source={{ uri: item.media }} style={styles.image} />
+                          <FastImage source={{ uri: item.media }} style={styles.image} />
                         )
                       );
                     }} />

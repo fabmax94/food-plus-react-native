@@ -11,14 +11,14 @@ import {
   Icon,
   Header,
   View,
-  Thumbnail,
+  Thumbnail, Spinner,
 } from "native-base";
 import FastImage from "react-native-fast-image";
 import { ContextAuth } from "../contexts/authContext";
 import { ChooseImage } from "../utils/ChooseMedia";
 
 const SigIn = () => {
-  const { signIn, auth } = useContext(ContextAuth);
+  const { signIn, auth, isLoadingSignIn } = useContext(ContextAuth);
   const [data, setData] = useState({
     name: "",
     avatar: "",
@@ -64,11 +64,15 @@ const SigIn = () => {
             )}
           </Button>
           <Button rounded light style={styles.btn} onPress={() => signIn(data)}>
-            <Icon
-              name="arrow-right"
-              type="FontAwesome"
-              style={styles.iconArrow}
-            />
+            {isLoadingSignIn ? (
+              <Spinner color={"#ffffff"} style={{ marginHorizontal: 10 }} />
+            ) : (
+              <Icon
+                name="arrow-right"
+                type="FontAwesome"
+                style={styles.iconArrow}
+              />
+            )}
           </Button>
         </View>
       </Content>
