@@ -14,10 +14,12 @@ import {
 import Form from "../components/Form";
 import { FirebaseService, PathRecipe } from "../services/FirebaseService";
 import { ContextAuth } from "../contexts/authContext";
+import useBackAlert from "../hooks/back-alert";
 
 const EditRecipe = ({ navigation, route }) => {
   const { auth } = useContext(ContextAuth);
   const [isLoading, setIsLoading] = useState(false);
+  const { backAction } = useBackAlert(navigation);
 
   const initRecipe = {
     key: route.params.key,
@@ -30,6 +32,7 @@ const EditRecipe = ({ navigation, route }) => {
     avatar: route.params.avatar,
     gallery: route.params.gallery,
   };
+
 
   const onEdit = async recipe => {
     setIsLoading(true);
@@ -60,7 +63,7 @@ const EditRecipe = ({ navigation, route }) => {
     <Container style={styles.container}>
       <Header androidStatusBarColor="#ef3e5c" style={styles.header}>
         <Left>
-          <Button transparent onPress={navigation.goBack}>
+          <Button transparent onPress={backAction}>
             <Icon name="arrow-back" />
           </Button>
         </Left>
