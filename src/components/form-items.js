@@ -13,21 +13,29 @@ import {
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { getInitText } from "../utils/functions";
 
-const FormItems = ({ itemText, items, onChangeList, onChange, placeholder }) => {
+const FormItems = ({ itemText, items, onChange, placeholder }) => {
   const [itemList, setItemList] = useState(items);
   const [isList, setIsList] = useState(false);
-  const handleChange = (index, newValue) => {
+  const handleChangeList = (index, newValue) => {
     itemList[index] = newValue;
     setItemList(itemList);
-    onChangeList(itemList);
+    onChange(itemList, itemList.join("\n"));
+  };
+  const handleChangeText = (ingredientsText) => {
+    const ingredients = ingredientsText
+      .split("\n")
+      .filter(t => t.trim())
+      .map(t => t.trim());
+    setItemList(ingredients);
+    onChange(ingredients, ingredientsText);
   };
   const deleteItem = indexToDelete => {
     setItemList(itemList.filter((item, index) => index !== indexToDelete));
-    onChangeList(itemList.filter((item, index) => index !== indexToDelete));
+    const newList = itemList.filter((item, index) => index !== indexToDelete);
+    onChange(newList, newList.join("\n"));
   };
   const addItem = () => {
     setItemList([...itemList, ""]);
-    onChangeList(itemList);
   };
   return (
     <Content>
@@ -48,14 +56,15 @@ const FormItems = ({ itemText, items, onChangeList, onChange, placeholder }) => 
                     type={"FontAwesome"}
                     style={{
                       alignSelf: "center",
-                      marginRight: 5,
+                      marginLeft: 5,
                       color: "#4d4e52",
+                      flex: 0.1
                     }}
                   />
                   <Item regular style={styles.input}>
                     <Input
                       value={item}
-                      onChangeText={text => handleChange(index, text)}
+                      onChangeText={text => handleChangeList(index, text)}
                       placeholder={placeholder}
                       style={{ color: "#4d4e52" }}
                     />
@@ -68,8 +77,9 @@ const FormItems = ({ itemText, items, onChangeList, onChange, placeholder }) => 
             )}
             keyExtractor={(item, index) => `${placeholder}${index}`}
             onDragEnd={({ data }) => {
-              setItemList([...data]);
-              onChangeList([...data]);
+              const newList = [...data];
+              setItemList(newList);
+              onChange(newList, newList.join("\n"));
             }}
           />
           {!itemList.length ? (
@@ -84,13 +94,7 @@ const FormItems = ({ itemText, items, onChangeList, onChange, placeholder }) => 
             rowSpan={5}
             bordered
             value={getInitText(itemText, items)}
-            onChangeText={ingredientsText => {
-              const ingredients = ingredientsText
-                .split("\n")
-                .filter(t => t.trim())
-                .map(t => t.trim());
-              onChange(ingredients, ingredientsText);
-            }}
+            onChangeText={handleChangeText}
             style={styles.textarea}
           />
         </View>

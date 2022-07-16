@@ -78,7 +78,10 @@ const DetailRecipe = ({ navigation, route }) => {
       alert(error.message);
     }
   };
-  const gallery = recipe.gallery.length ? recipe.gallery : [{ media: recipe.image, type: "photo" }];
+  const gallery = recipe.gallery.length ? recipe.gallery : (recipe.image ? [{
+    media: recipe.image,
+    type: "photo",
+  }] : []);
   return (
     <Container style={styles.container}>
       <ScrollView>

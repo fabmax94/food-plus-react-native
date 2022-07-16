@@ -63,9 +63,6 @@ const Form = ({ initRecipe, onHandleSave, isLoading }) => {
           itemText={recipe.ingredientsText}
           items={recipe.ingredients}
           placeholder={"Ingrediente"}
-          onChangeList={ingredients => {
-            setRecipe({ ...recipe, ingredients });
-          }}
           onChange={(ingredients, ingredientsText) => {
             setRecipe({ ...recipe, ingredients, ingredientsText });
           }}
@@ -75,9 +72,6 @@ const Form = ({ initRecipe, onHandleSave, isLoading }) => {
           itemText={recipe.stepsText}
           items={recipe.steps}
           placeholder={"Passo"}
-          onChangeList={steps => {
-            setRecipe({ ...recipe, steps });
-          }}
           onChange={(steps, stepsText) => {
             setRecipe({ ...recipe, steps, stepsText });
           }}
