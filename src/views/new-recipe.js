@@ -28,7 +28,7 @@ const NewRecipe = ({ navigation }) => {
     if (recipe.gallery.length) {
       const newMedias = [];
       for (let item of recipe.gallery) {
-        const url = await FirebaseService.pushFile(item.media);
+        const url = await FirebaseService.pushFile(item.media, item.type);
         if (item.media === recipe.image) {
           recipe.image = url;
         }

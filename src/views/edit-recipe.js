@@ -41,7 +41,7 @@ const EditRecipe = ({ navigation, route }) => {
     if (recipe.gallery.length) {
       const newMedias = recipe.gallery.filter(item => item.media.includes("http"));
       for (let item of recipe.gallery.filter(item => !item.media.includes("http"))) {
-        const url = await FirebaseService.pushFile(item.media);
+        const url = await FirebaseService.pushFile(item.media, item.type);
         if (item.media === recipe.image) {
           recipe.image = url;
         }

@@ -48,12 +48,14 @@ export class FirebaseService {
     ref.remove();
   };
 
-  static pushFile = async (uploadUri) => {
+  static pushFile = async (uploadUri, type = "photo") => {
+    const base64Type = type === "photo" ? "image/jpeg;BASE64" : "video/mp4;BASE64";
+    const contentType = type === "photo" ? "image/jpeg" : "video/mp4";
     const sessionId = new Date().getTime();
     const imageRef = firebaseStorage.ref(PathImages).child(`${sessionId}`);
     const data = await fs.readFile(uploadUri, "base64");
-    const blob = await Blob.build(data, { type: "image/jpeg;BASE64" });
-    await imageRef.put(blob, { contentType: "image/jpeg" });
+    const blob = await Blob.build(data, { type: base64Type });
+    await imageRef.put(blob, { contentType: contentType });
     await blob.close();
     return await imageRef.getDownloadURL();
   };
