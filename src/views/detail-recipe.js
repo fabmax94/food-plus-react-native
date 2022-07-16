@@ -15,9 +15,10 @@ import {
   Right,
 } from "native-base";
 import FastImage from "react-native-fast-image";
-import DetailItems from "../components/DetailItems";
 import Video from "react-native-video";
 import Carousel from "react-native-snap-carousel";
+
+import DetailItems from "../components/detail-items";
 
 const DetailRecipe = ({ navigation, route }) => {
   const recipe = {

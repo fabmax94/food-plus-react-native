@@ -1,7 +1,7 @@
 import React, { useReducer, useEffect, useState } from "react";
-import { authReducer } from "../reducers/authReducer";
+import authReducer  from "../reducers/auth";
 import AsyncStorage from "@react-native-community/async-storage";
-import { FirebaseService } from "../services/FirebaseService";
+import { FirebaseService } from "../services/firebase-service";
 
 const ContextAuth = React.createContext();
 

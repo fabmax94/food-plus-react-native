@@ -11,36 +11,23 @@ import {
   Content,
   Right,
 } from "native-base";
-import Form from "../components/Form";
-import { FirebaseService, PathRecipe } from "../services/FirebaseService";
-import { ContextAuth } from "../contexts/authContext";
+import Form from "../components/form";
+import { FirebaseService, PathRecipe } from "../services/firebase-service";
+import { ContextAuth } from "../contexts/auth";
 import useBackAlert from "../hooks/back-alert";
 
-const EditRecipe = ({ navigation, route }) => {
+const NewRecipe = ({ navigation }) => {
   const { auth } = useContext(ContextAuth);
   const [isLoading, setIsLoading] = useState(false);
   const { backAction } = useBackAlert(navigation);
 
-  const initRecipe = {
-    key: route.params.key,
-    name: route.params.name,
-    description: route.params.description,
-    ingredients: route.params.ingredients ?? [],
-    steps: route.params.steps ?? [],
-    image: route.params.image,
-    author: route.params.author,
-    avatar: route.params.avatar,
-    gallery: route.params.gallery,
-  };
-
-
-  const onEdit = async recipe => {
+  const onSave = async recipe => {
     setIsLoading(true);
     recipe.author = auth.userToken;
     recipe.avatar = auth.avatar;
     if (recipe.gallery.length) {
-      const newMedias = recipe.gallery.filter(item => item.media.includes("http"));
-      for (let item of recipe.gallery.filter(item => !item.media.includes("http"))) {
+      const newMedias = [];
+      for (let item of recipe.gallery) {
         const url = await FirebaseService.pushFile(item.media);
         if (item.media === recipe.image) {
           recipe.image = url;
@@ -55,6 +42,7 @@ const EditRecipe = ({ navigation, route }) => {
     } else {
       FirebaseService.pushData(PathRecipe, recipe);
     }
+
     setIsLoading(false);
     navigation.goBack();
   };
@@ -68,12 +56,12 @@ const EditRecipe = ({ navigation, route }) => {
           </Button>
         </Left>
         <Body>
-          <Title>Editar Receita</Title>
+          <Title>Nova Receita</Title>
         </Body>
         <Right />
       </Header>
       <Content style={styles.content}>
-        <Form isLoading={isLoading} initRecipe={initRecipe} onHandleSave={onEdit} />
+        <Form isLoading={isLoading} onHandleSave={onSave} />
       </Content>
     </Container>
   );
@@ -96,4 +84,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditRecipe;
+export default NewRecipe;

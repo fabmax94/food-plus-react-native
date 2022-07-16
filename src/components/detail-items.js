@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {StyleSheet, TouchableWithoutFeedback} from 'react-native';
-import {View, Text} from 'native-base';
+import React, { useState } from "react";
+import { StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { View, Text } from "native-base";
 
-const DetailItems = ({list, title}) => {
-  const [markList, setMarkList] = useState(list.map(item => false));
+const DetailItems = ({ list, title }) => {
+  const [markList, setMarkList] = useState(list.map(() => false));
 
   const listSeparator = item => {
     if (list.indexOf(item) + 1 !== list.length) {
@@ -19,9 +19,9 @@ const DetailItems = ({list, title}) => {
   const textStyle = item => {
     let index = list.indexOf(item);
     if (markList[index]) {
-      return {...styles.text, backgroundColor: '#d3f1da'};
+      return { ...styles.text, backgroundColor: "#d3f1da" };
     } else {
-      return {...styles.text};
+      return { ...styles.text };
     }
   };
 
@@ -55,25 +55,25 @@ const styles = StyleSheet.create({
     fontSize: 18,
     flex: 1,
     padding: 15,
-    color: '#4d4e52',
+    color: "#4d4e52",
   },
   title: {
     fontSize: 18,
-    color: '#777777',
-    fontWeight: 'bold',
-    alignSelf: 'center',
+    color: "#777777",
+    fontWeight: "bold",
+    alignSelf: "center",
   },
   separator: {
     height: 1,
-    width: '100%',
-    backgroundColor: '#e9ebf0',
+    width: "100%",
+    backgroundColor: "#e9ebf0",
   },
   view: {
     flex: 1,
     paddingBottom: 10,
   },
   viewTitle: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     padding: 15,
   },
 });

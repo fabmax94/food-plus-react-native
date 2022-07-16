@@ -14,8 +14,8 @@ import {
   Thumbnail, Spinner,
 } from "native-base";
 import FastImage from "react-native-fast-image";
-import { ContextAuth } from "../contexts/authContext";
-import { ChooseImage } from "../utils/ChooseMedia";
+import { ContextAuth } from "../contexts/auth";
+import { imagePicker } from "../utils/media-picker";
 
 const SigIn = () => {
   const { signIn, auth, isLoadingSignIn } = useContext(ContextAuth);
@@ -50,7 +50,7 @@ const SigIn = () => {
             bordered
             rounded
             style={styles.itemForm}
-            onPress={() => ChooseImage(avatar => setData({ ...data, avatar }))}>
+            onPress={() => imagePicker(avatar => setData({ ...data, avatar }))}>
             <Text style={styles.icon}>Escolha seu avatar</Text>
             {data.avatar ? (
               <Thumbnail

@@ -1,27 +1,27 @@
-import React, {useContext} from 'react';
+import React, { useContext } from "react";
 import {
   createStackNavigator,
   TransitionSpecs,
   HeaderStyleInterpolators,
-} from '@react-navigation/stack';
-import {NavigationContainer} from '@react-navigation/native';
-import NewRecipe from './views/NewRecipe';
-import SignIn from './views/SignIn';
-import ListRecipe from './views/ListRecipe';
-import EditRecipe from './views/EditRecipe';
-import DetailRecipe from './views/DetailRecipe';
-import {ContextAuthProvider, ContextAuth} from './contexts/authContext';
-import FastImage from 'react-native-fast-image';
-import {StyleSheet, View} from 'react-native';
+} from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import NewRecipe from "./views/new-recipe";
+import SignIn from "./views/sign-in";
+import ListRecipe from "./views/list-recipe";
+import EditRecipe from "./views/edit-recipe";
+import DetailRecipe from "./views/detail-recipe";
+import { ContextAuthProvider, ContextAuth } from "./contexts/auth";
+import FastImage from "react-native-fast-image";
+import { StyleSheet, View } from "react-native";
 
 const HorizontalTransition = {
-  gestureDirection: 'horizontal',
+  gestureDirection: "horizontal",
   transitionSpec: {
     open: TransitionSpecs.TransitionIOSSpec,
     close: TransitionSpecs.TransitionIOSSpec,
   },
   headerStyleInterpolator: HeaderStyleInterpolators.forFade,
-  cardStyleInterpolator: ({current, next, layouts}) => {
+  cardStyleInterpolator: ({ current, next, layouts }) => {
     return {
       cardStyle: {
         transform: [
@@ -40,12 +40,12 @@ const HorizontalTransition = {
 const Stack = createStackNavigator();
 
 const StackApp = () => {
-  const {auth, isLoading} = useContext(ContextAuth);
+  const { auth, isLoading } = useContext(ContextAuth);
   if (isLoading) {
     return (
       <View style={styles.contentImage}>
         <FastImage
-          source={require('./assets/app_icon.png')}
+          source={require("./assets/app_icon.png")}
           style={styles.image}
         />
       </View>
@@ -103,9 +103,9 @@ const styles = StyleSheet.create({
     height: 200,
   },
   contentImage: {
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
     flex: 1,
   },
 });

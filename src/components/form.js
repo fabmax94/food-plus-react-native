@@ -11,11 +11,12 @@ import {
   View,
   Textarea, Spinner,
 } from "native-base";
-import FormItems from "./FormItems";
-import { ChooseImage, ChooseVideo } from "../utils/ChooseMedia";
 import Video from "react-native-video";
-import AlertDialog from "../utils/AlertDialog";
 import FastImage from "react-native-fast-image";
+
+import FormItems from "./form-items";
+import AlertDialog from "../utils/alert-dialog";
+import { imagePicker, videoPicker } from "../utils/media-picker";
 
 const initState = {
   name: "",
@@ -114,7 +115,7 @@ const Form = ({ initRecipe, onHandleSave, isLoading }) => {
 
         <View style={styles.viewBtn}>
           <Button
-            onPress={() => ChooseVideo(video => {
+            onPress={() => videoPicker(video => {
               const gallery = [...recipe.gallery, { type: "video", media: video }];
               setRecipe({ ...recipe, gallery });
             })}
@@ -125,7 +126,7 @@ const Form = ({ initRecipe, onHandleSave, isLoading }) => {
             <Text style={styles.textBtn}>Video</Text>
           </Button>
           <Button
-            onPress={() => ChooseImage(image => {
+            onPress={() => imagePicker(image => {
               const gallery = [...recipe.gallery, { type: "photo", media: image }];
               let newRecipe = { ...recipe, gallery };
               if (!recipe.image) {

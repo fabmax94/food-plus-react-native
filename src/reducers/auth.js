@@ -1,17 +1,17 @@
-const authReducer = (state, {type, token, avatar}) => {
+const auth = (state, { type, token, avatar }) => {
   switch (type) {
-    case 'RESTORE_TOKEN':
+    case "RESTORE_TOKEN":
       return {
         userToken: token,
         avatar: avatar,
         isLoading: false,
       };
-    case 'SIGN_IN':
+    case "SIGN_IN":
       return {
         userToken: token,
         avatar: avatar,
       };
-    case 'SIGN_OUT':
+    case "SIGN_OUT":
       return {
         userToken: null,
         avatar: null,
@@ -19,4 +19,4 @@ const authReducer = (state, {type, token, avatar}) => {
   }
 };
 
-export {authReducer};
+export default auth;
